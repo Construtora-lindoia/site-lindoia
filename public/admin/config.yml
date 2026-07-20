@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: OWNER/construtora-lindoia # ajustado após criar o repositório
+  repo: RAKIaero/construtora-lindoia
   branch: main
   base_url: https://construtora-lindoia.vercel.app
   auth_endpoint: /api/auth
