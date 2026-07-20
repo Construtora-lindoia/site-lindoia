@@ -13,7 +13,7 @@ const { Content } = await render(obra);
 ---
 
 <Layout
-  title={`${obra.data.titulo} — Obra`}
+  title={`Obra ${obra.data.titulo}`}
   description={`Obra ${obra.data.titulo} (${SEGMENTOS[obra.data.segmento]}) executada pela Construtora Lindóia com estrutura pré-moldada de fabricação própria.`}
 >
   <div class="page-head">
@@ -32,7 +32,7 @@ const { Content } = await render(obra);
       <div class="descricao"><Content /></div>
       <div class="galeria">
         {obra.data.fotos.map((foto, i) => (
-          <img src={foto} alt={`Obra ${obra.data.titulo} — foto ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
+          <img src={foto} alt={`Obra ${obra.data.titulo}, foto ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
         ))}
       </div>
       <p style="margin-top:40px"><a class="btn" href="/obras/">← Todas as obras</a></p>
@@ -43,7 +43,7 @@ const { Content } = await render(obra);
     <div class="wrap">
       <h2>Quer uma obra assim?</h2>
       <p>Fale com o nosso comercial e receba o orçamento da sua.</p>
-      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp — {SITE.telefoneComercial}</a>
+      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp</a>
     </div>
   </section>
 </Layout>
