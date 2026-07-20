@@ -9,6 +9,7 @@ const GH = 'https://api.github.com';
 const SITE = 'https://construtora-lindoia.vercel.app';
 const DIR_OBRAS = 'src/content/obras';
 const DIR_PRODUTOS = 'src/content/produtos';
+const DIR_BLOG = 'src/content/blog';
 const DIR_UPLOADS = 'public/img/uploads';
 
 const SEGMENTOS = {
@@ -29,7 +30,7 @@ const FUNIL = {
 let token = localStorage.getItem('lin_token') || '';
 let usuario = null;
 let aba = 'obras';
-let itens = { obras: [], produtos: [], leads: [] };
+let itens = { obras: [], produtos: [], blog: [], leads: [] };
 let leadsErro = null;
 let leadsCarregado = false;
 let editando = null; // item aberto no modal
@@ -242,7 +243,11 @@ function sair() {
 
 /* ============ carga de dados ============ */
 async function carregarTudo() {
-  const [arqObras, arqProds] = await Promise.all([listar(DIR_OBRAS), listar(DIR_PRODUTOS)]);
+  const [arqObras, arqProds, arqBlog] = await Promise.all([
+    listar(DIR_OBRAS),
+    listar(DIR_PRODUTOS),
+    listar(DIR_BLOG).catch(() => []),
+  ]);
   const lerTodos = (arqs, tipo) =>
     Promise.all(
       arqs
@@ -253,10 +258,15 @@ async function carregarTudo() {
           return { tipo, arquivo: a.path, sha: f.sha, slug: a.name.replace(/\.md$/, ''), data, body };
         })
     );
-  const [obras, produtos] = await Promise.all([lerTodos(arqObras, 'obra'), lerTodos(arqProds, 'produto')]);
+  const [obras, produtos, posts] = await Promise.all([
+    lerTodos(arqObras, 'obra'),
+    lerTodos(arqProds, 'produto'),
+    lerTodos(arqBlog, 'post'),
+  ]);
   const porOrdem = (a, b) => (a.data.ordem ?? 99) - (b.data.ordem ?? 99) || a.data.titulo?.localeCompare?.(b.data.titulo) || 0;
   itens.obras = obras.sort(porOrdem);
   itens.produtos = produtos.sort(porOrdem);
+  itens.blog = posts.sort((a, b) => String(b.data.data || '').localeCompare(String(a.data.data || '')));
 }
 
 /* ============ telas ============ */
@@ -295,15 +305,17 @@ function render() {
         <div class="abas">
           <button data-aba="obras" class="${aba === 'obras' ? 'on' : ''}">Obras<span>${itens.obras.length}</span></button>
           <button data-aba="produtos" class="${aba === 'produtos' ? 'on' : ''}">Produtos<span>${itens.produtos.length}</span></button>
+          <button data-aba="blog" class="${aba === 'blog' ? 'on' : ''}">Blog<span>${itens.blog.length}</span></button>
           <button data-aba="leads" class="${aba === 'leads' ? 'on' : ''}">Leads<span>${itens.leads.filter((l) => l.status === 'novo').length || itens.leads.length}</span></button>
         </div>
-        <button class="btn" id="bt-novo">+ ${aba === 'obras' ? 'Nova obra' : aba === 'produtos' ? 'Novo produto' : 'Novo lead'}</button>
+        <button class="btn" id="bt-novo">+ ${{ obras: 'Nova obra', produtos: 'Novo produto', blog: 'Novo post', leads: 'Novo lead' }[aba]}</button>
       </div>
       <div id="grade"></div>
     </main>`;
 
   $('#bt-sair').onclick = sair;
-  $('#bt-novo').onclick = () => (aba === 'leads' ? abrirLeadManual() : abrirEditor(null));
+  $('#bt-novo').onclick = () =>
+    aba === 'leads' ? abrirLeadManual() : aba === 'blog' ? abrirEditorBlog(null) : abrirEditor(null);
   document.querySelectorAll('.abas button').forEach((b) => {
     b.onclick = async () => {
       aba = b.dataset.aba;
@@ -329,11 +341,22 @@ function renderGrade() {
   g.innerHTML = lista
     .map((it, i) => {
       const d = it.data;
-      const img = aba === 'obras' ? d.capa : d.imagem;
-      const contain = aba === 'produtos' ? ' contain' : '';
-      const badge = aba === 'obras' ? `<span class="badge">${esc(SEGMENTOS[d.segmento] || d.segmento || '')}</span>` : '';
-      const star = aba === 'obras' && d.destaque ? '<span class="badge star">★ destaque</span>' : '';
-      const sub = aba === 'obras' ? [d.cliente, d.cidade].filter(Boolean).join(' · ') : d.resumo || '';
+      let img, contain = '', badge = '', star = '', sub = '';
+      if (aba === 'obras') {
+        img = d.capa;
+        badge = `<span class="badge">${esc(SEGMENTOS[d.segmento] || d.segmento || '')}</span>`;
+        star = d.destaque ? '<span class="badge star">★ destaque</span>' : '';
+        sub = [d.cliente, d.cidade].filter(Boolean).join(' · ');
+      } else if (aba === 'produtos') {
+        img = d.imagem;
+        contain = ' contain';
+        sub = d.resumo || '';
+      } else {
+        img = d.capa;
+        badge = d.rascunho ? '<span class="badge" style="background:#b45309">✎ rascunho</span>' : '';
+        const dt = d.data ? new Date(d.data + 'T12:00:00').toLocaleDateString('pt-BR') : '';
+        sub = [dt, d.descricao].filter(Boolean).join(' · ');
+      }
       return `
       <div class="card" data-i="${i}">
         <div class="thumb${contain}">${img ? `<img loading="lazy" src="${esc(SITE + img)}" onerror="this.remove()" />` : ''}${badge}${star}</div>
@@ -341,7 +364,10 @@ function renderGrade() {
       </div>`;
     })
     .join('');
-  g.querySelectorAll('.card').forEach((c) => (c.onclick = () => abrirEditor(itens[aba][+c.dataset.i])));
+  g.querySelectorAll('.card').forEach((c) => {
+    const item = itens[aba][+c.dataset.i];
+    c.onclick = () => (aba === 'blog' ? abrirEditorBlog(item) : abrirEditor(item));
+  });
 }
 
 /* ============ editor ============ */
@@ -565,6 +591,117 @@ async function excluir(veu) {
   } catch (e) {
     salvando = false;
     toast('Erro ao excluir: ' + e.message, 'erro');
+  }
+}
+
+/* ============ blog ============ */
+function mdPost(d, body) {
+  const linhas = [
+    '---',
+    'titulo: ' + yamlStr(d.titulo),
+    'descricao: ' + yamlStr(d.descricao),
+    'data: ' + d.data,
+  ];
+  if (d.capa) linhas.push('capa: ' + d.capa);
+  linhas.push('rascunho: ' + !!d.rascunho, '---', '', body || '');
+  return linhas.join('\n');
+}
+
+function abrirEditorBlog(item) {
+  editando = item;
+  const d = item ? { ...item.data } : {};
+  fotosEdit = [];
+  if (item && d.capa) fotosEdit.push({ path: d.capa, url: SITE + d.capa, novo: null });
+  const hoje = new Date().toISOString().slice(0, 10);
+
+  const veu = document.createElement('div');
+  veu.className = 'veu';
+  veu.innerHTML = `
+    <div class="modal">
+      <div class="modal-topo">
+        <b>${item ? 'Editar post' : 'Novo post'}</b>
+        <button id="bt-fecha">×</button>
+      </div>
+      <div class="modal-corpo">
+        <div>
+          <div class="campo"><label>Título</label><input type="text" id="p-titulo" value="${esc(d.titulo || '')}" placeholder="Ex: Obra entregue: novo armazém em Sorriso" /></div>
+          <div class="campo"><label>Resumo (aparece na lista e no Google)</label><textarea id="p-desc" rows="2" style="min-height:60px">${esc(d.descricao || '')}</textarea></div>
+          <div class="linha2">
+            <div class="campo"><label>Data</label><input type="date" id="p-data" value="${esc(d.data || hoje)}" /></div>
+            <div class="campo" style="display:flex;align-items:flex-end;padding-bottom:6px">
+              <label class="check"><input type="checkbox" id="p-rascunho" ${d.rascunho ? 'checked' : ''} /> Rascunho (não publica)</label>
+            </div>
+          </div>
+          <div class="campo"><label>Texto do post</label><textarea id="p-body" rows="12" style="min-height:260px" placeholder="Escreva aqui. Dicas de formatação: ## Título de seção, **negrito**, - item de lista.">${esc(item?.body || '')}</textarea></div>
+        </div>
+        <div>
+          <div class="campo"><label>Foto de capa (opcional)</label>
+            <div class="solta" id="solta">Arraste a foto aqui<br/>ou <b>clique pra escolher</b></div>
+            <input type="file" id="f-arqs" accept="image/*" class="hidden" />
+            <div class="fotos-grade" id="fotos"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-pe">
+        ${item ? '<button class="btn danger" id="bt-excluir">Excluir</button>' : ''}
+        <button class="btn sec" id="bt-cancela">Cancelar</button>
+        <button class="btn" id="bt-salva" style="min-width:170px">Salvar e publicar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(veu);
+
+  const fecha = () => !salvando && veu.remove();
+  $('#bt-fecha').onclick = fecha;
+  $('#bt-cancela').onclick = fecha;
+  veu.addEventListener('mousedown', (e) => e.target === veu && fecha());
+
+  const solta = $('#solta');
+  const inp = $('#f-arqs');
+  solta.onclick = () => inp.click();
+  solta.ondragover = (e) => { e.preventDefault(); solta.classList.add('puxa'); };
+  solta.ondragleave = () => solta.classList.remove('puxa');
+  solta.ondrop = (e) => { e.preventDefault(); solta.classList.remove('puxa'); addArquivos(e.dataTransfer.files, false); };
+  inp.onchange = () => addArquivos(inp.files, false);
+  renderFotos(false);
+
+  if ($('#bt-excluir')) $('#bt-excluir').onclick = () => excluir(veu);
+  $('#bt-salva').onclick = () => salvarPost(veu);
+}
+
+async function salvarPost(veu) {
+  if (salvando) return;
+  const v = (id) => $(id)?.value.trim();
+  if (!v('#p-titulo')) return toast('Dá um título pro post.', 'erro');
+  if (!v('#p-desc')) return toast('Escreve o resumo (1 ou 2 frases).', 'erro');
+  if (!v('#p-body')) return toast('O post tá sem texto.', 'erro');
+  try {
+    salvando = true;
+    $('#bt-salva').disabled = true;
+    const slug = editando ? editando.slug : slugify(v('#p-titulo'));
+    const paths = await subirFotos(slug);
+    toast('Publicando…', '', true);
+    const conteudo = mdPost(
+      {
+        titulo: v('#p-titulo'),
+        descricao: v('#p-desc'),
+        data: v('#p-data') || new Date().toISOString().slice(0, 10),
+        capa: paths[0] || '',
+        rascunho: $('#p-rascunho').checked,
+      },
+      v('#p-body')
+    );
+    const arquivo = editando ? editando.arquivo : `${DIR_BLOG}/${slug}.md`;
+    await gravar(arquivo, toB64(conteudo), `conteúdo: ${editando ? 'atualiza' : 'cria'} post "${v('#p-titulo')}"`, editando?.sha);
+    salvando = false;
+    veu.remove();
+    toast('✓ Salvo! O site atualiza em ~1 minuto.', 'ok');
+    await carregarTudo();
+    render();
+  } catch (e) {
+    salvando = false;
+    const b = $('#bt-salva');
+    if (b) b.disabled = false;
+    toast('Erro ao salvar: ' + e.message, 'erro');
   }
 }
 
