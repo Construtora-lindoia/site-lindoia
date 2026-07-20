@@ -18,10 +18,20 @@ const SEGMENTOS = {
   infraestrutura: 'Infraestrutura',
 };
 
+const FUNIL = {
+  novo: ['Novos', '#2563eb'],
+  contato: ['Em contato', '#d97706'],
+  orcamento: ['Orçamento enviado', '#7c3aed'],
+  fechado: ['Fechados', '#16a34a'],
+  perdido: ['Perdidos', '#6b7280'],
+};
+
 let token = localStorage.getItem('lin_token') || '';
 let usuario = null;
 let aba = 'obras';
-let itens = { obras: [], produtos: [] };
+let itens = { obras: [], produtos: [], leads: [] };
+let leadsErro = null;
+let leadsCarregado = false;
 let editando = null; // item aberto no modal
 let fotosEdit = []; // [{path, url, novo:File|null}]
 let salvando = false;
@@ -285,24 +295,30 @@ function render() {
         <div class="abas">
           <button data-aba="obras" class="${aba === 'obras' ? 'on' : ''}">Obras<span>${itens.obras.length}</span></button>
           <button data-aba="produtos" class="${aba === 'produtos' ? 'on' : ''}">Produtos<span>${itens.produtos.length}</span></button>
+          <button data-aba="leads" class="${aba === 'leads' ? 'on' : ''}">Leads<span>${itens.leads.filter((l) => l.status === 'novo').length || itens.leads.length}</span></button>
         </div>
-        <button class="btn" id="bt-novo">+ ${aba === 'obras' ? 'Nova obra' : 'Novo produto'}</button>
+        <button class="btn" id="bt-novo">+ ${aba === 'obras' ? 'Nova obra' : aba === 'produtos' ? 'Novo produto' : 'Novo lead'}</button>
       </div>
       <div id="grade"></div>
     </main>`;
 
   $('#bt-sair').onclick = sair;
-  $('#bt-novo').onclick = () => abrirEditor(null);
+  $('#bt-novo').onclick = () => (aba === 'leads' ? abrirLeadManual() : abrirEditor(null));
   document.querySelectorAll('.abas button').forEach((b) => {
-    b.onclick = () => {
+    b.onclick = async () => {
       aba = b.dataset.aba;
       render();
+      if (aba === 'leads' && !leadsCarregado) {
+        await carregarLeads();
+        render();
+      }
     };
   });
   renderGrade();
 }
 
 function renderGrade() {
+  if (aba === 'leads') return renderLeads();
   const lista = itens[aba];
   const g = $('#grade');
   if (!lista.length) {
@@ -550,6 +566,208 @@ async function excluir(veu) {
     salvando = false;
     toast('Erro ao excluir: ' + e.message, 'erro');
   }
+}
+
+/* ============ leads ============ */
+async function apiLeads(method, corpo, query) {
+  const r = await fetch('/api/leads' + (query || ''), {
+    method,
+    headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+    ...(corpo ? { body: JSON.stringify(corpo) } : {}),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Erro ' + r.status);
+  return j;
+}
+async function carregarLeads() {
+  try {
+    leadsErro = null;
+    itens.leads = (await apiLeads('GET')).leads || [];
+    leadsCarregado = true;
+  } catch (e) {
+    leadsErro = e.message;
+  }
+}
+
+function telWa(tel) {
+  let d = String(tel || '').replace(/\D/g, '');
+  if (d && !d.startsWith('55') && d.length >= 10) d = '55' + d;
+  return d ? 'https://wa.me/' + d : null;
+}
+function tempoRel(iso) {
+  const ms = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(ms / 60000);
+  if (min < 1) return 'agora';
+  if (min < 60) return 'há ' + min + ' min';
+  const h = Math.floor(min / 60);
+  if (h < 24) return 'há ' + h + 'h';
+  const d = Math.floor(h / 24);
+  if (d === 1) return 'ontem';
+  if (d < 30) return 'há ' + d + ' dias';
+  return new Date(iso).toLocaleDateString('pt-BR');
+}
+const ORIGENS = { site: 'Site', manual: 'Manual' };
+
+function renderLeads() {
+  const g = $('#grade');
+  g.className = '';
+  if (!leadsCarregado && !leadsErro) {
+    g.innerHTML = '<div class="carregando"><span class="gira escuro"></span></div>';
+    return;
+  }
+  if (leadsErro) {
+    g.innerHTML = `<div class="aviso-banco">
+      <b>Funil de leads ainda não ativado</b>
+      <p>${esc(leadsErro)}</p>
+      <p>Falta criar o banco de dados gratuito na Vercel (Storage → Create Database → Neon) e conectar ao projeto <b>construtora-lindoia</b>. Depois disso, esta aba liga sozinha.</p>
+    </div>`;
+    return;
+  }
+  const porStatus = {};
+  Object.keys(FUNIL).forEach((s) => (porStatus[s] = []));
+  itens.leads.forEach((l) => (porStatus[l.status] || porStatus.novo).push(l));
+
+  g.innerHTML = `<div class="kanban">${Object.entries(FUNIL)
+    .map(([st, [rotulo, cor]]) => {
+      const lista = porStatus[st];
+      return `<div class="coluna">
+        <div class="coluna-cab" style="--cor:${cor}"><i></i>${rotulo}<span>${lista.length}</span></div>
+        ${lista
+          .map((l) => {
+            const wa = telWa(l.telefone);
+            return `<div class="lead-card" data-id="${l.id}">
+              <div class="lead-topo"><b>${esc(l.nome)}</b><small>${tempoRel(l.criado_em)}</small></div>
+              <small class="lead-sub">${esc([ORIGENS[l.origem] || l.origem, l.cidade, SEGMENTOS[l.segmento] || (l.segmento === 'produtos' ? 'Produtos' : l.segmento)].filter(Boolean).join(' · '))}</small>
+              ${l.mensagem ? `<p class="lead-msg">${esc(l.mensagem)}</p>` : ''}
+              ${l.notas ? '<small class="lead-nota">✎ tem anotações</small>' : ''}
+              <div class="lead-acoes">
+                ${wa ? `<a class="lead-wa" href="${wa}" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp</a>` : ''}
+                <select class="lead-status" onclick="event.stopPropagation()">
+                  ${Object.entries(FUNIL).map(([v, [r]]) => `<option value="${v}" ${l.status === v ? 'selected' : ''}>${r}</option>`).join('')}
+                </select>
+              </div>
+            </div>`;
+          })
+          .join('')}
+        ${!lista.length ? '<div class="coluna-vazia">—</div>' : ''}
+      </div>`;
+    })
+    .join('')}</div>`;
+
+  g.querySelectorAll('.lead-card').forEach((c) => {
+    const lead = itens.leads.find((l) => l.id === +c.dataset.id);
+    c.onclick = () => abrirLead(lead);
+    c.querySelector('.lead-status').onchange = async (e) => {
+      try {
+        await apiLeads('PATCH', { id: lead.id, status: e.target.value });
+        lead.status = e.target.value;
+        renderLeads();
+      } catch (err) {
+        toast('Erro: ' + err.message, 'erro');
+      }
+    };
+  });
+}
+
+function abrirLead(l) {
+  const wa = telWa(l.telefone);
+  const veu = document.createElement('div');
+  veu.className = 'veu';
+  veu.innerHTML = `
+    <div class="modal" style="max-width:560px">
+      <div class="modal-topo"><b>${esc(l.nome)}</b><button id="bt-fecha">×</button></div>
+      <div class="modal-corpo" style="grid-template-columns:1fr">
+        <div>
+          <div class="lead-det">
+            <div><label>WhatsApp</label>${esc(l.telefone)}</div>
+            ${l.email ? `<div><label>E-mail</label>${esc(l.email)}</div>` : ''}
+            ${l.cidade ? `<div><label>Cidade</label>${esc(l.cidade)}</div>` : ''}
+            ${l.segmento ? `<div><label>Tipo de obra</label>${esc(SEGMENTOS[l.segmento] || l.segmento)}</div>` : ''}
+            <div><label>Origem</label>${esc(ORIGENS[l.origem] || l.origem)}${l.utm ? ' · ' + esc(l.utm) : ''}</div>
+            <div><label>Chegou</label>${new Date(l.criado_em).toLocaleString('pt-BR')}</div>
+          </div>
+          ${l.mensagem ? `<div class="campo"><label>Mensagem</label><p style="font-size:.9rem;color:#4a4a4a">${esc(l.mensagem)}</p></div>` : ''}
+          <div class="campo"><label>Anotações internas</label><textarea id="l-notas" placeholder="Ex: orçamento enviado dia 22, aguardando retorno…">${esc(l.notas || '')}</textarea></div>
+        </div>
+      </div>
+      <div class="modal-pe">
+        <button class="btn danger" id="bt-l-excluir">Excluir</button>
+        ${wa ? `<a class="btn sec" style="text-decoration:none" href="${wa}" target="_blank" rel="noopener">Abrir WhatsApp</a>` : ''}
+        <button class="btn" id="bt-l-salvar">Salvar anotações</button>
+      </div>
+    </div>`;
+  document.body.appendChild(veu);
+  const fecha = () => veu.remove();
+  $('#bt-fecha').onclick = fecha;
+  veu.addEventListener('mousedown', (e) => e.target === veu && fecha());
+  $('#bt-l-salvar').onclick = async () => {
+    try {
+      await apiLeads('PATCH', { id: l.id, notas: $('#l-notas').value.trim() });
+      l.notas = $('#l-notas').value.trim();
+      fecha();
+      toast('✓ Anotações salvas.', 'ok');
+      renderLeads();
+    } catch (e) {
+      toast('Erro: ' + e.message, 'erro');
+    }
+  };
+  $('#bt-l-excluir').onclick = async () => {
+    if (!confirm(`Excluir o lead "${l.nome}"?`)) return;
+    try {
+      await apiLeads('DELETE', null, '?id=' + l.id);
+      itens.leads = itens.leads.filter((x) => x.id !== l.id);
+      fecha();
+      toast('✓ Lead excluído.', 'ok');
+      renderLeads();
+    } catch (e) {
+      toast('Erro: ' + e.message, 'erro');
+    }
+  };
+}
+
+function abrirLeadManual() {
+  const veu = document.createElement('div');
+  veu.className = 'veu';
+  veu.innerHTML = `
+    <div class="modal" style="max-width:480px">
+      <div class="modal-topo"><b>Novo lead</b><button id="bt-fecha">×</button></div>
+      <div class="modal-corpo" style="grid-template-columns:1fr">
+        <div>
+          <div class="campo"><label>Nome*</label><input type="text" id="ml-nome" /></div>
+          <div class="campo"><label>WhatsApp*</label><input type="text" id="ml-tel" placeholder="(66) 9…" /></div>
+          <div class="campo"><label>Cidade</label><input type="text" id="ml-cidade" /></div>
+          <div class="campo"><label>Observação</label><textarea id="ml-msg" placeholder="Ex: chegou por indicação do Machado…"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-pe">
+        <button class="btn sec" id="bt-cancela">Cancelar</button>
+        <button class="btn" id="bt-ml-salvar">Adicionar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(veu);
+  const fecha = () => veu.remove();
+  $('#bt-fecha').onclick = fecha;
+  $('#bt-cancela').onclick = fecha;
+  veu.addEventListener('mousedown', (e) => e.target === veu && fecha());
+  $('#bt-ml-salvar').onclick = async () => {
+    const nome = $('#ml-nome').value.trim();
+    const tel = $('#ml-tel').value.trim();
+    if (nome.length < 2 || tel.length < 8) return toast('Preencha nome e WhatsApp.', 'erro');
+    try {
+      const r = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, telefone: tel, cidade: $('#ml-cidade').value.trim(), mensagem: $('#ml-msg').value.trim(), origem: 'manual' }),
+      });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Erro');
+      fecha();
+      toast('✓ Lead adicionado.', 'ok');
+      await carregarLeads();
+      render();
+    } catch (e) {
+      toast('Erro: ' + e.message, 'erro');
+    }
+  };
 }
 
 /* ============ boot ============ */

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import FormOrcamento from '../components/FormOrcamento.astro';
 import { SITE } from '../lib/site';
 ---
 
@@ -16,6 +17,17 @@ import { SITE } from '../lib/site';
   </div>
 
   <section>
+    <div class="wrap form-wrap">
+      <div>
+        <div class="eyebrow">Orçamento</div>
+        <h2>Peça seu orçamento</h2>
+        <p class="lead" style="margin-bottom:26px">Preenche que o nosso comercial te chama no WhatsApp.</p>
+        <FormOrcamento />
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
     <div class="wrap">
       <div class="cards">
         <div class="card destaque">

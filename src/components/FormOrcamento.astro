@@ -1,0 +1,112 @@
+---
+import { SITE, SEGMENTOS } from '../lib/site';
+---
+
+<div class="form-orc" id="orcamento">
+  <form id="form-lead" autocomplete="on">
+    <div class="fo-linha">
+      <div class="fo-campo">
+        <label for="fo-nome">Seu nome*</label>
+        <input id="fo-nome" name="nome" type="text" required maxlength="120" />
+      </div>
+      <div class="fo-campo">
+        <label for="fo-tel">WhatsApp*</label>
+        <input id="fo-tel" name="telefone" type="tel" required maxlength="40" placeholder="(66) 9…" />
+      </div>
+    </div>
+    <div class="fo-linha">
+      <div class="fo-campo">
+        <label for="fo-cidade">Cidade</label>
+        <input id="fo-cidade" name="cidade" type="text" maxlength="80" />
+      </div>
+      <div class="fo-campo">
+        <label for="fo-seg">Tipo de obra</label>
+        <select id="fo-seg" name="segmento">
+          <option value="">Selecione…</option>
+          {Object.entries(SEGMENTOS).map(([v, l]) => <option value={v}>{l}</option>)}
+          <option value="produtos">Produtos pré-moldados</option>
+        </select>
+      </div>
+    </div>
+    <div class="fo-campo">
+      <label for="fo-msg">Conte sobre a sua obra</label>
+      <textarea id="fo-msg" name="mensagem" maxlength="2000" rows="4"></textarea>
+    </div>
+    <input type="text" name="site" tabindex="-1" autocomplete="off" class="fo-hp" aria-hidden="true" />
+    <button class="btn" type="submit" id="fo-btn">Pedir orçamento</button>
+    <p class="fo-alt">Ou, se preferir: <a href={SITE.whatsapp} target="_blank" rel="noopener">chama direto no WhatsApp — {SITE.telefoneComercial}</a></p>
+  </form>
+  <div id="fo-ok" class="fo-ok" hidden>
+    <b>✓ Recebemos seu pedido!</b>
+    <p>Nosso comercial vai te chamar no WhatsApp. Se quiser adiantar: <a href={SITE.whatsapp} target="_blank" rel="noopener">clica aqui e fala com a gente agora</a>.</p>
+  </div>
+</div>
+
+<style>
+  .form-orc { max-width: 640px; }
+  .fo-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 600px) { .fo-linha { grid-template-columns: 1fr; } }
+  .fo-campo { margin-bottom: 14px; }
+  .fo-campo label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+  .fo-campo input, .fo-campo select, .fo-campo textarea {
+    width: 100%;
+    border: 1px solid #d7d7d7;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: var(--grafite);
+    background: #fff;
+  }
+  .fo-campo textarea { resize: vertical; }
+  .fo-hp { position: absolute; left: -9999px; opacity: 0; height: 0; }
+  .fo-alt { font-size: 0.8rem; color: #6b7280; margin-top: 14px; }
+  .fo-alt a { color: var(--vermelho); font-weight: 700; }
+  .fo-ok { border: 1px solid #bbe5c8; background: #f0faf3; padding: 26px; }
+  .fo-ok b { text-transform: uppercase; }
+  .fo-ok p { margin-top: 8px; color: #4a4a4a; font-size: 0.92rem; }
+  .fo-ok a { color: var(--vermelho); font-weight: 700; }
+</style>
+
+<script>
+  const form = document.getElementById('form-lead') as HTMLFormElement;
+  const btn = document.getElementById('fo-btn') as HTMLButtonElement;
+
+  // guarda UTMs da visita (pra medir tráfego pago depois)
+  try {
+    const p = new URLSearchParams(location.search);
+    const utms: string[] = [];
+    p.forEach((v, k) => { if (k.startsWith('utm_') || k === 'gclid' || k === 'fbclid') utms.push(k + '=' + v); });
+    if (utms.length) sessionStorage.setItem('lin_utm', utms.join('&'));
+  } catch {}
+
+  form?.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    const dados = Object.fromEntries(new FormData(form).entries());
+    dados.origem = 'site';
+    try { dados.utm = sessionStorage.getItem('lin_utm') || (document.referrer ? 'ref=' + document.referrer : ''); } catch {}
+    try {
+      const r = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados),
+      });
+      if (!r.ok) throw new Error();
+      form.hidden = true;
+      (document.getElementById('fo-ok') as HTMLElement).hidden = false;
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'Pedir orçamento';
+      alert('Não conseguimos enviar agora. Chama a gente direto no WhatsApp: (66) 99986-7361');
+    }
+  });
+</script>
