@@ -9,8 +9,8 @@ export default async function handler(req, res) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
-      client_id: process.env.OAUTH_GITHUB_CLIENT_ID,
-      client_secret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
+      client_id: (process.env.OAUTH_GITHUB_CLIENT_ID || '').trim(),
+      client_secret: (process.env.OAUTH_GITHUB_CLIENT_SECRET || '').trim(),
       code,
     }),
   });

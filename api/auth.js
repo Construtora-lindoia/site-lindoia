@@ -1,5 +1,5 @@
 export default function handler(req, res) {
-  const clientId = process.env.OAUTH_GITHUB_CLIENT_ID;
+  const clientId = (process.env.OAUTH_GITHUB_CLIENT_ID || '').trim();
   if (!clientId) {
     res.status(500).send('OAUTH_GITHUB_CLIENT_ID não configurado na Vercel');
     return;
