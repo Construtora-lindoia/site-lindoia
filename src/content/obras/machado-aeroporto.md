@@ -1,12 +1,12 @@
 ---
-titulo: Machado — Aeroporto
-cliente: Machado Supermercados
+titulo: "Machado — Aeroporto"
+cliente: "Machado Supermercados"
 segmento: comercial
-cidade: Sinop-MT
-capa: /img/obras/machado-aeroporto-1.jpg
+cidade: "Sinop-MT"
+capa: /img/obras/machado-aeroporto-2.jpg
 fotos:
-  - /img/obras/machado-aeroporto-1.jpg
   - /img/obras/machado-aeroporto-2.jpg
+  - /img/obras/machado-aeroporto-1.jpg
   - /img/obras/machado-aeroporto-3.jpg
 ordem: 1
 destaque: true
