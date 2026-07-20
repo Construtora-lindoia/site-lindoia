@@ -630,12 +630,12 @@ function renderLeads() {
   g.innerHTML = `<div class="kanban">${Object.entries(FUNIL)
     .map(([st, [rotulo, cor]]) => {
       const lista = porStatus[st];
-      return `<div class="coluna">
+      return `<div class="coluna" data-st="${st}">
         <div class="coluna-cab" style="--cor:${cor}"><i></i>${rotulo}<span>${lista.length}</span></div>
         ${lista
           .map((l) => {
             const wa = telWa(l.telefone);
-            return `<div class="lead-card" data-id="${l.id}">
+            return `<div class="lead-card" draggable="true" data-id="${l.id}">
               <div class="lead-topo"><b>${esc(l.nome)}</b><small>${tempoRel(l.criado_em)}</small></div>
               <small class="lead-sub">${esc([ORIGENS[l.origem] || l.origem, l.cidade, SEGMENTOS[l.segmento] || (l.segmento === 'produtos' ? 'Produtos' : l.segmento)].filter(Boolean).join(' · '))}</small>
               ${l.mensagem ? `<p class="lead-msg">${esc(l.mensagem)}</p>` : ''}
@@ -657,6 +657,12 @@ function renderLeads() {
   g.querySelectorAll('.lead-card').forEach((c) => {
     const lead = itens.leads.find((l) => l.id === +c.dataset.id);
     c.onclick = () => abrirLead(lead);
+    c.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', String(lead.id));
+      e.dataTransfer.effectAllowed = 'move';
+      requestAnimationFrame(() => c.classList.add('arrastando'));
+    });
+    c.addEventListener('dragend', () => c.classList.remove('arrastando'));
     c.querySelector('.lead-status').onchange = async (e) => {
       try {
         await apiLeads('PATCH', { id: lead.id, status: e.target.value });
@@ -666,6 +672,35 @@ function renderLeads() {
         toast('Erro: ' + err.message, 'erro');
       }
     };
+  });
+
+  g.querySelectorAll('.coluna').forEach((col) => {
+    col.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      col.classList.add('recebendo');
+    });
+    col.addEventListener('dragleave', (e) => {
+      if (!col.contains(e.relatedTarget)) col.classList.remove('recebendo');
+    });
+    col.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      col.classList.remove('recebendo');
+      const id = +e.dataTransfer.getData('text/plain');
+      const lead = itens.leads.find((l) => l.id === id);
+      const novoStatus = col.dataset.st;
+      if (!lead || lead.status === novoStatus) return;
+      const anterior = lead.status;
+      lead.status = novoStatus;
+      renderLeads(); // move na hora; desfaz se a API falhar
+      try {
+        await apiLeads('PATCH', { id, status: novoStatus });
+      } catch (err) {
+        lead.status = anterior;
+        renderLeads();
+        toast('Erro ao mover: ' + err.message, 'erro');
+      }
+    });
   });
 }
 
