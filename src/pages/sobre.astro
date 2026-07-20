@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../lib/site';
+---
+
+<Layout
+  title="A Lindóia — 30 anos de história"
+  description="Fundada em 1997 em Sinop-MT pelos irmãos Cavaglieri, a Construtora Lindóia completa 30 anos com duas unidades fabris, frota própria e obras em todo o Mato Grosso."
+>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">30 anos de história</div>
+      <h1>A marca da solidez em sua obra</h1>
+      <p>Três décadas construindo mais do que obras: construindo relações, confiança e um legado que se fortalece a cada dia.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap duas-colunas">
+      <img
+        src="/img/institucional/historia-fundadores.png"
+        alt="Fundadores da Construtora Lindóia no canteiro de obras, década de 1990"
+      />
+      <div>
+        <h2>Do primeiro canteiro às duas unidades fabris</h2>
+        <p class="texto">
+          A Construtora Lindóia foi fundada em 1997, em Sinop-MT, pelos irmãos Luis Carlos e
+          Airto César Cavaglieri. Crescemos junto com o desenvolvimento de Mato Grosso,
+          construindo armazéns, silos, barracões e obras comerciais e industriais por toda a
+          região.
+        </p>
+        <p class="texto">
+          Hoje somos referência em estruturas pré-moldadas de concreto, com duas unidades
+          fabris que somam 50.000 m², frota própria com caminhões munck e um corpo técnico de
+          engenheiros, técnicos e mestres de obra.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <h2>Integração vertical: o nosso diferencial</h2>
+      <p class="lead">Controle total sobre cada etapa — é isso que garante prazo e qualidade.</p>
+      <div class="cards">
+        <div class="card"><b>Projetamos</b><p>Corpo técnico especializado desenvolve a solução estrutural da obra.</p></div>
+        <div class="card"><b>Fabricamos</b><p>Pré-moldados produzidos nas nossas duas unidades fabris em Sinop.</p></div>
+        <div class="card"><b>Transportamos</b><p>Frota própria com caminhões munck e equipamentos especializados.</p></div>
+        <div class="card"><b>Montamos</b><p>Equipes próprias de montagem, com gestão rigorosa de prazo e segurança.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap duas-colunas">
+      <div>
+        <h2>Compromissos que sustentam a marca</h2>
+        <ul class="lista">
+          <li><b>Missão</b> — atuar nacionalmente na construção civil com comprometimento ético, inovação e aprimoramento contínuo, respeitando o talento humano, sua saúde e segurança.</li>
+          <li><b>Visão</b> — ser referência nacional no ramo da construção civil por serviços de alto padrão de qualidade e excelência.</li>
+          <li><b>Sustentabilidade</b> — energia solar nas operações e melhoria contínua dos processos.</li>
+        </ul>
+      </div>
+      <img src="/img/institucional/sede.png" alt="Sede da Construtora Lindóia em Sinop-MT" loading="lazy" />
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>Vamos construir juntos?</h2>
+      <p>Fale com quem entrega há 30 anos.</p>
+      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp — {SITE.telefoneComercial}</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .duas-colunas img { width: 100%; }
+  .texto { color: #4a4a4a; margin-bottom: 16px; }
+  @media (max-width: 900px) { .duas-colunas { grid-template-columns: 1fr; } }
+
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 40px; }
+  .card { background: #fff; border: 1px solid #e6e6e6; border-top: 4px solid var(--vermelho); padding: 26px; }
+  .card b { text-transform: uppercase; font-size: 0.95rem; display: block; margin-bottom: 8px; }
+  .card p { font-size: 0.88rem; color: #5c5c5c; }
+  @media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+
+  .lista { list-style: none; margin-top: 24px; }
+  .lista li { padding-left: 26px; position: relative; margin-bottom: 18px; color: #4a4a4a; }
+  .lista li::before { content: ''; position: absolute; left: 0; top: 10px; width: 12px; height: 3px; background: var(--vermelho); }
+  .lista b { text-transform: uppercase; font-size: 0.9rem; }
+</style>

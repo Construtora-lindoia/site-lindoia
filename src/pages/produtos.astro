@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../lib/site';
+
+const produtos = (await getCollection('produtos')).sort((a, b) => a.data.ordem - b.data.ordem);
+---
+
+<Layout
+  title="Produtos"
+  description="Catálogo de pré-moldados de concreto da Construtora Lindóia: lajes alveolares, painéis, pilares, vigas, terças, estacas, trincheiras, cochos e aduelas. Fabricação própria em Sinop-MT."
+>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">Fabricação própria</div>
+      <h1>Nossos produtos</h1>
+      <p>Pré-moldados de concreto produzidos em duas unidades fabris que somam 50.000 m², com controle total de qualidade — da forma à entrega na obra.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="prod-grid">
+        {produtos.map((p) => (
+          <div class="prod">
+            <img src={p.data.imagem} alt={p.data.nome} loading="lazy" />
+            <b>{p.data.nome}</b>
+            <p>{p.data.resumo}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>Precisa de pré-moldados?</h2>
+      <p>Consulte disponibilidade, medidas e prazos direto com o comercial.</p>
+      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp — {SITE.telefoneComercial}</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prod-grid { grid-template-columns: repeat(4, 1fr); margin-top: 0; }
+  @media (max-width: 1000px) { .prod-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .prod-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,37 @@
+---
+import { SITE } from '../lib/site';
+---
+
+<footer class="site-footer">
+  <div class="wrap foot-grid">
+    <div>
+      <img class="flogo" src="/img/logo-branco.webp" alt="Construtora Lindóia" width="150" height="52" />
+      <p>{SITE.tagline}.</p>
+    </div>
+    <div>
+      <h4>Contato para novas obras</h4>
+      <ul>
+        <li>{SITE.enderecoSede}</li>
+        <li><a href={SITE.whatsapp} target="_blank" rel="noopener">{SITE.telefoneComercial}</a></li>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Unidade I</h4>
+      <ul>
+        <li>{SITE.enderecoSede}</li>
+        <li>{SITE.telefoneFixo}</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Unidade II</h4>
+      <ul>
+        <li>{SITE.enderecoUnidade2}</li>
+        <li>{SITE.telefoneFixo}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-base">
+    Construtora Lindóia Ltda · CNPJ {SITE.cnpj} · Sinop-MT
+  </div>
+</footer>

@@ -1,0 +1,12 @@
+{
+  "clientes": [
+    { "nome": "Machado Supermercados", "logo": "/img/clientes/machado.webp" },
+    { "nome": "Urbano", "logo": "/img/clientes/urbano.png" },
+    { "nome": "Madeiranit", "logo": "/img/clientes/madeiranit.webp" },
+    { "nome": "John Roberts", "logo": "/img/clientes/johnroberts.webp" },
+    { "nome": "Ascia", "logo": "/img/clientes/ascia.png" },
+    { "nome": "Carvalima", "logo": "/img/clientes/carvalima.png" },
+    { "nome": "Shops Sinop", "logo": "/img/clientes/shopsinop.png" },
+    { "nome": "Viehotel", "logo": "/img/clientes/viehotel.png" }
+  ]
+}

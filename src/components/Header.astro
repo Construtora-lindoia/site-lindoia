@@ -1,0 +1,32 @@
+---
+import { SITE } from '../lib/site';
+
+const path = Astro.url.pathname;
+const links = [
+  { href: '/sobre/', label: 'A Lindóia' },
+  { href: '/obras/', label: 'Obras' },
+  { href: '/produtos/', label: 'Produtos' },
+  { href: '/contato/', label: 'Contato' },
+];
+const isActive = (href: string) => (path === href || path.startsWith(href)) ? 'page' : undefined;
+---
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="logos">
+      <a class="logo" href="/" aria-label="Construtora Lindóia — página inicial">
+        <img src="/img/logo.webp" alt="Construtora Lindóia" width="160" height="48" />
+      </a>
+      <span class="logo-sep" aria-hidden="true"></span>
+      <a class="logo logo-piso" href="/produtos/" aria-label="Pisoforte Pré-Moldados — nossos produtos">
+        <img src="/img/pisoforte.webp" alt="Pisoforte Pré-Moldados" width="120" height="40" />
+      </a>
+    </div>
+    <ul>
+      {links.map((l) => (
+        <li><a href={l.href} aria-current={isActive(l.href)}>{l.label}</a></li>
+      ))}
+    </ul>
+    <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Peça seu orçamento</a>
+  </div>
+</header>

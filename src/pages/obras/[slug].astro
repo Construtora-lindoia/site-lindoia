@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { SEGMENTOS, SITE } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const obras = await getCollection('obras');
+  return obras.map((obra) => ({ params: { slug: obra.id }, props: { obra } }));
+}
+
+const { obra } = Astro.props;
+const { Content } = await render(obra);
+---
+
+<Layout
+  title={`${obra.data.titulo} — Obra`}
+  description={`Obra ${obra.data.titulo} (${SEGMENTOS[obra.data.segmento]}) executada pela Construtora Lindóia com estrutura pré-moldada de fabricação própria.`}
+>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">{SEGMENTOS[obra.data.segmento]}</div>
+      <h1>{obra.data.titulo}</h1>
+      <p>
+        {obra.data.cliente}
+        {obra.data.cidade ? ` · ${obra.data.cidade}` : ''}
+      </p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="descricao"><Content /></div>
+      <div class="galeria">
+        {obra.data.fotos.map((foto, i) => (
+          <img src={foto} alt={`Obra ${obra.data.titulo} — foto ${i + 1}`} loading={i === 0 ? 'eager' : 'lazy'} />
+        ))}
+      </div>
+      <p style="margin-top:40px"><a class="btn" href="/obras/">← Todas as obras</a></p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>Quer uma obra assim?</h2>
+      <p>Fale com o nosso comercial e receba o orçamento da sua.</p>
+      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp — {SITE.telefoneComercial}</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .descricao { max-width: 720px; color: #4a4a4a; margin-bottom: 40px; font-size: 1.05rem; }
+  .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+  .galeria img { width: 100%; height: 380px; object-fit: cover; }
+  @media (max-width: 600px) { .galeria img { height: 240px; } }
+</style>
