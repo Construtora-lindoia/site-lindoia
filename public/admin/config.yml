@@ -25,6 +25,7 @@ collections:
     folder: src/content/obras
     create: true
     identifier_field: titulo
+    thumbnail: capa
     slug: '{{slug}}'
     fields:
       - { name: titulo, label: Título, widget: string }
@@ -50,6 +51,7 @@ collections:
     folder: src/content/produtos
     create: true
     identifier_field: nome
+    thumbnail: imagem
     slug: '{{slug}}'
     fields:
       - { name: nome, label: Nome, widget: string }
