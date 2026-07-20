@@ -2,9 +2,9 @@
 titulo: Bertuol Fertilizantes
 cliente: Bertuol Fertilizantes
 segmento: industria
-capa: /img/obras/bertuol.png
+capa: /img/obras/bertuol.webp
 fotos:
-  - /img/obras/bertuol.png
+  - /img/obras/bertuol.webp
 ordem: 5
 ---
 

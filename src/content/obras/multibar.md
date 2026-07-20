@@ -3,11 +3,11 @@ titulo: "Multibar"
 cliente: "Multibar"
 segmento: comercial
 cidade: "Sinop - MT"
-capa: /img/obras/multibar-1.png
+capa: /img/obras/multibar-1.webp
 fotos:
-  - /img/obras/multibar-1.png
-  - /img/obras/multibar-2.png
-  - /img/obras/multibar-3.png
+  - /img/obras/multibar-1.webp
+  - /img/obras/multibar-2.webp
+  - /img/obras/multibar-3.webp
 ordem: 3
 destaque: false
 ---

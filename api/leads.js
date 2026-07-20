@@ -55,6 +55,55 @@ async function autorizado(req) {
 
 const corta = (v, n) => String(v ?? '').trim().slice(0, n);
 
+const SEG_ROTULOS = {
+  agroindustria: 'Agroindústria',
+  comercial: 'Comercial e Varejo',
+  industria: 'Indústria',
+  infraestrutura: 'Infraestrutura',
+  produtos: 'Produtos pré-moldados',
+};
+
+/* Aviso por e-mail quando entra lead. Se o Resend não estiver
+   configurado, apenas não envia; o lead é salvo do mesmo jeito. */
+async function notificaLead(lead) {
+  const key = (process.env.RESEND_API_KEY || '').trim();
+  const para = (process.env.LEAD_NOTIFY_TO || '').trim();
+  if (!key || !para) return;
+  const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const linha = (rotulo, valor) =>
+    valor
+      ? `<tr><td style="padding:6px 14px 6px 0;color:#6b7280;font-size:12px;text-transform:uppercase;white-space:nowrap">${rotulo}</td><td style="padding:6px 0;font-size:14px;color:#111">${esc(valor)}</td></tr>`
+      : '';
+  const zap = String(lead.telefone || '').replace(/\D/g, '');
+  const waLink = zap ? `https://wa.me/${zap.startsWith('55') ? zap : '55' + zap}` : null;
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: (process.env.LEAD_NOTIFY_FROM || 'Painel Lindóia <onboarding@resend.dev>').trim(),
+      to: [para],
+      subject: `Novo lead no site: ${lead.nome}`,
+      html: `<div style="font-family:Arial,sans-serif;max-width:520px">
+        <h2 style="color:#373737;margin-bottom:4px">Novo lead no funil</h2>
+        <p style="color:#6b7280;margin-top:0;font-size:13px">Chegou agora pelo ${lead.origem === 'site' ? 'formulário do site' : 'cadastro manual'}.</p>
+        <table style="border-collapse:collapse">
+          ${linha('Nome', lead.nome)}
+          ${linha('WhatsApp', lead.telefone)}
+          ${linha('E-mail', lead.email)}
+          ${linha('Cidade', lead.cidade)}
+          ${linha('Tipo de obra', SEG_ROTULOS[lead.segmento] || lead.segmento)}
+          ${linha('Mensagem', lead.mensagem)}
+          ${linha('Origem/UTM', lead.utm)}
+        </table>
+        <p style="margin-top:20px">
+          ${waLink ? `<a href="${waLink}" style="background:#16a34a;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;font-weight:bold;margin-right:8px">Responder no WhatsApp</a>` : ''}
+          <a href="https://construtora-lindoia.vercel.app/admin" style="background:#db4d4b;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;font-weight:bold">Abrir o funil</a>
+        </p>
+      </div>`,
+    }),
+  });
+}
+
 export default async function handler(req, res) {
   try {
     await garanteTabela();
@@ -71,7 +120,10 @@ export default async function handler(req, res) {
         VALUES (${nome}, ${telefone}, ${corta(b.email, 120)}, ${corta(b.cidade, 80)},
                 ${corta(b.segmento, 40)}, ${corta(b.mensagem, 2000)},
                 ${corta(b.origem, 40) || 'site'}, ${corta(b.utm, 500)})
-        RETURNING id`;
+        RETURNING *`;
+      try {
+        await notificaLead(lead);
+      } catch {} // e-mail nunca derruba o cadastro do lead
       return res.status(201).json({ ok: true, id: lead.id });
     }
 

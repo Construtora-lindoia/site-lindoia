@@ -2,11 +2,11 @@
 titulo: Berneck
 cliente: Berneck
 segmento: industria
-capa: /img/obras/berneck-1.jpg
+capa: /img/obras/berneck-1.webp
 fotos:
-  - /img/obras/berneck-1.jpg
-  - /img/obras/berneck-2.jpg
-  - /img/obras/berneck-3.jpg
+  - /img/obras/berneck-1.webp
+  - /img/obras/berneck-2.webp
+  - /img/obras/berneck-3.webp
 ordem: 4
 destaque: true
 ---

@@ -2,9 +2,9 @@
 titulo: Armazém graneleiro
 cliente: Agronegócio regional
 segmento: agroindustria
-capa: /img/obras/armazem.png
+capa: /img/obras/armazem.webp
 fotos:
-  - /img/obras/armazem.png
+  - /img/obras/armazem.webp
 ordem: 8
 ---
 

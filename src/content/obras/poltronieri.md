@@ -2,11 +2,11 @@
 titulo: Poltronieri
 cliente: Poltronieri
 segmento: agroindustria
-capa: /img/obras/poltronieri-1.jpg
+capa: /img/obras/poltronieri-1.webp
 fotos:
-  - /img/obras/poltronieri-1.jpg
-  - /img/obras/poltronieri-2.jpg
-  - /img/obras/poltronieri-3.jpg
+  - /img/obras/poltronieri-1.webp
+  - /img/obras/poltronieri-2.webp
+  - /img/obras/poltronieri-3.webp
 ordem: 7
 ---
 

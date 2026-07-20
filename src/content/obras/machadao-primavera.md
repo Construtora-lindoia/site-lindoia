@@ -3,11 +3,11 @@ titulo: Machadão
 cliente: Machado Supermercados
 segmento: comercial
 cidade: Primavera do Leste-MT
-capa: /img/obras/machadao-primavera-1.jpeg
+capa: /img/obras/machadao-primavera-1.webp
 fotos:
-  - /img/obras/machadao-primavera-1.jpeg
-  - /img/obras/machadao-primavera-2.jpeg
-  - /img/obras/machadao-primavera-3.jpeg
+  - /img/obras/machadao-primavera-1.webp
+  - /img/obras/machadao-primavera-2.webp
+  - /img/obras/machadao-primavera-3.webp
 ordem: 2
 destaque: true
 ---

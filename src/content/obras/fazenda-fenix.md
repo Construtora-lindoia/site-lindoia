@@ -2,10 +2,10 @@
 titulo: Fazenda Fênix
 cliente: Fazenda Fênix
 segmento: agroindustria
-capa: /img/obras/fazenda-fenix-1.jpg
+capa: /img/obras/fazenda-fenix-1.webp
 fotos:
-  - /img/obras/fazenda-fenix-1.jpg
-  - /img/obras/fazenda-fenix-2.jpg
+  - /img/obras/fazenda-fenix-1.webp
+  - /img/obras/fazenda-fenix-2.webp
 ordem: 6
 destaque: true
 ---
