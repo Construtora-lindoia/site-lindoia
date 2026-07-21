@@ -51,6 +51,47 @@ const { Content } = await render(obra);
 <style>
   .descricao { max-width: 720px; color: #4a4a4a; margin-bottom: 40px; font-size: 1.05rem; }
   .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
-  .galeria img { width: 100%; height: 380px; object-fit: cover; }
+  .galeria img { width: 100%; height: 380px; object-fit: cover; cursor: zoom-in; transition: opacity 0.2s; }
+  .galeria img:hover { opacity: 0.92; }
   @media (max-width: 600px) { .galeria img { height: 240px; } }
 </style>
+
+<script>
+  // lightbox da galeria
+  const fotos = [...document.querySelectorAll<HTMLImageElement>('.galeria img')];
+  if (fotos.length) {
+    const ov = document.createElement('div');
+    ov.className = 'lb';
+    ov.innerHTML =
+      '<button class="lb-x" aria-label="Fechar">×</button>' +
+      '<button class="lb-p" aria-label="Anterior">‹</button>' +
+      '<img alt="" />' +
+      '<button class="lb-n" aria-label="Próxima">›</button>';
+    document.body.appendChild(ov);
+    const img = ov.querySelector('img')!;
+    let i = 0;
+    const mostra = (n: number) => {
+      i = (n + fotos.length) % fotos.length;
+      img.src = fotos[i].src;
+      ov.classList.add('on');
+      document.body.style.overflow = 'hidden';
+    };
+    const fecha = () => {
+      ov.classList.remove('on');
+      document.body.style.overflow = '';
+    };
+    fotos.forEach((f, n) => f.addEventListener('click', () => mostra(n)));
+    ov.addEventListener('click', (e) => {
+      const alvo = e.target as HTMLElement;
+      if (alvo === ov || alvo.classList.contains('lb-x')) fecha();
+    });
+    ov.querySelector('.lb-p')!.addEventListener('click', (e) => { e.stopPropagation(); mostra(i - 1); });
+    ov.querySelector('.lb-n')!.addEventListener('click', (e) => { e.stopPropagation(); mostra(i + 1); });
+    addEventListener('keydown', (e) => {
+      if (!ov.classList.contains('on')) return;
+      if (e.key === 'Escape') fecha();
+      if (e.key === 'ArrowLeft') mostra(i - 1);
+      if (e.key === 'ArrowRight') mostra(i + 1);
+    });
+  }
+</script>
