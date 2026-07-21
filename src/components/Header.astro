@@ -27,7 +27,25 @@ const isActive = (href: string) => (path === href || path.startsWith(href)) ? 'p
       {links.map((l) => (
         <li><a href={l.href} aria-current={isActive(l.href)}>{l.label}</a></li>
       ))}
+      <li class="so-mobile">
+        <a href={SITE.whatsapp} target="_blank" rel="noopener">Peça seu orçamento →</a>
+      </li>
     </ul>
-    <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Peça seu orçamento</a>
+    <a class="btn btn-orc" href={SITE.whatsapp} target="_blank" rel="noopener">Peça seu orçamento</a>
+    <button class="menu-bt" id="menu-bt" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<script>
+  const bt = document.getElementById('menu-bt');
+  const hd = document.querySelector('.site-header');
+  bt?.addEventListener('click', () => {
+    const aberto = hd?.classList.toggle('menu-aberto');
+    bt.setAttribute('aria-expanded', String(!!aberto));
+  });
+  document.querySelectorAll('.site-header ul a').forEach((a) =>
+    a.addEventListener('click', () => hd?.classList.remove('menu-aberto'))
+  );
+</script>

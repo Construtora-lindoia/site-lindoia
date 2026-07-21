@@ -13,6 +13,7 @@ body {
   color: var(--grafite);
   background: var(--branco);
   line-height: 1.6;
+  overflow-x: hidden;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -82,10 +83,6 @@ h2 {
 .nav .logo img { height: 48px; width: auto; }
 .nav .logo-piso img { height: 40px; }
 .nav .logo-sep { width: 1px; height: 40px; background: #dcdcdc; }
-@media (max-width: 560px) {
-  .nav .logo img { height: 38px; }
-  .nav .logo-piso img { height: 30px; }
-}
 .nav ul { display: flex; gap: 30px; list-style: none; }
 .nav ul a {
   font-weight: 600;
@@ -95,7 +92,68 @@ h2 {
 }
 .nav ul a:hover, .nav ul a[aria-current='page'] { color: var(--vermelho); }
 .nav .btn { padding: 12px 22px; font-size: 0.78rem; }
-@media (max-width: 960px) { .nav ul { display: none; } }
+.so-mobile { display: none; }
+
+/* menu mobile */
+.menu-bt {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: 0;
+  padding: 10px 6px;
+  cursor: pointer;
+}
+.menu-bt span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: var(--grafite);
+  transition: transform 0.25s, opacity 0.2s;
+}
+.site-header.menu-aberto .menu-bt span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.site-header.menu-aberto .menu-bt span:nth-child(2) { opacity: 0; }
+.site-header.menu-aberto .menu-bt span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+@media (max-width: 960px) {
+  .nav ul { display: none; }
+  .menu-bt { display: flex; }
+  .so-mobile { display: block; }
+  .site-header.menu-aberto .nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+    box-shadow: 0 20px 32px rgba(0, 0, 0, 0.12);
+    padding: 4px 24px 14px;
+  }
+  .site-header.menu-aberto .nav ul a {
+    display: block;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 0.95rem;
+  }
+  .site-header.menu-aberto .nav .so-mobile a {
+    color: var(--vermelho);
+    font-weight: 700;
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav { height: 62px; gap: 10px; }
+  .nav .logo img { height: 32px; }
+  .nav .logo-piso, .nav .logo-sep { display: none; }
+  .nav .btn-orc { display: none; }
+  .site-header.rolou .nav { height: 56px; }
+  .site-header.rolou .nav .logo img { height: 28px; }
+}
 
 /* páginas internas — cabeçalho */
 .page-head { background: var(--grafite); color: #fff; padding: 70px 0; }
