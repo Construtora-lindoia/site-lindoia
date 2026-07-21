@@ -1,6 +1,6 @@
 ---
-titulo: Poltronieri
-cliente: Poltronieri
+titulo: "Poltronieri"
+cliente: "Poltronieri"
 segmento: agroindustria
 capa: /img/obras/poltronieri-1.webp
 fotos:
@@ -8,6 +8,7 @@ fotos:
   - /img/obras/poltronieri-2.webp
   - /img/obras/poltronieri-3.webp
 ordem: 7
+destaque: true
 ---
 
 Obra agroindustrial executada com estruturas pré-moldadas de fabricação própria.
