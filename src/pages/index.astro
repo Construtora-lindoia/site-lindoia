@@ -215,9 +215,6 @@ const produtos = (await getCollection('produtos'))
   .hero h1 { animation: sobe 0.6s 0.25s both; }
   .hero p { animation: sobe 0.6s 0.4s both; }
   .hero .acts { animation: sobe 0.6s 0.55s both; }
-  @media (prefers-reduced-motion: reduce) {
-    .hero .selo30, .hero h1, .hero p, .hero .acts { animation: none; }
-  }
   .selo30 {
     display: inline-flex;
     align-items: center;
@@ -284,11 +281,6 @@ const produtos = (await getCollection('produtos'))
     will-change: transform;
   }
   @keyframes desfile { to { transform: translateX(-50%); } }
-  @media (prefers-reduced-motion: reduce) {
-    .marquee { mask-image: none; -webkit-mask-image: none; }
-    .marquee-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; }
-    .cli.dup { display: none; }
-  }
   .cli {
     background: #fff;
     border: 1px solid #e6e6e6;
@@ -339,10 +331,9 @@ const produtos = (await getCollection('produtos'))
 
 <script>
   // números que contam quando entram na tela
-  const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmt = new Intl.NumberFormat('pt-BR');
   const contadores = document.querySelectorAll<HTMLElement>('.cnt');
-  if (!reduz && contadores.length && 'IntersectionObserver' in window) {
+  if (contadores.length && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(
       (entradas) => {
         entradas.forEach((e) => {

@@ -83,7 +83,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         window.addEventListener('scroll', aoRolar, { passive: true });
 
         // animações de entrada no scroll
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         var alvos = document.querySelectorAll(
           'section h2, section .lead, .obra-card, .prod, .sol, .dep, .post-card, .stat, .card, .passo'
         );
@@ -137,9 +136,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     94% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 0 22px rgba(37, 211, 102, 0); }
   }
   .zap-flutuante { animation: zap-pulso 5s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) {
-    .zap-flutuante { animation: none; }
-  }
   @media (max-width: 600px) {
     .zap-flutuante { right: 16px; bottom: 16px; width: 54px; height: 54px; }
   }

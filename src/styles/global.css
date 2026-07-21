@@ -55,9 +55,6 @@ h2 {
 /* animações de entrada (classe aplicada via JS no Layout) */
 .rv { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
 .rv.on { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .rv { opacity: 1; transform: none; transition: none; }
-}
 
 /* header */
 .site-header {
