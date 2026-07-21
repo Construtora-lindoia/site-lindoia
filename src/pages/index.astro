@@ -118,8 +118,10 @@ const produtos = (await getCollection('produtos'))
       <h2>Nossos clientes</h2>
       <div class="marquee">
         <div class="marquee-track">
-          {[...clientes, ...clientes].map((c) => (
-            <div class="cli"><img src={c.logo} alt={c.nome} loading="lazy" /></div>
+          {[...clientes, ...clientes].map((c, i) => (
+            <div class={'cli' + (i >= clientes.length ? ' dup' : '')}>
+              <img src={c.logo} alt={c.nome} loading="lazy" />
+            </div>
           ))}
         </div>
       </div>
@@ -277,13 +279,16 @@ const produtos = (await getCollection('produtos'))
   }
   .marquee-track {
     display: flex;
-    gap: 18px;
     width: max-content;
-    animation: desfile 30s linear infinite;
+    animation: desfile 28s linear infinite;
+    will-change: transform;
   }
-  .marquee:hover .marquee-track { animation-play-state: paused; }
   @keyframes desfile { to { transform: translateX(-50%); } }
-  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { mask-image: none; -webkit-mask-image: none; }
+    .marquee-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; }
+    .cli.dup { display: none; }
+  }
   .cli {
     background: #fff;
     border: 1px solid #e6e6e6;
@@ -294,6 +299,7 @@ const produtos = (await getCollection('produtos'))
     height: 104px;
     flex: 0 0 auto;
     width: 190px;
+    margin-right: 18px;
   }
   .cli img { max-height: 52px; max-width: 130px; width: auto; filter: grayscale(1); opacity: 0.7; transition: filter 0.2s, opacity 0.2s; }
   .cli:hover img { filter: none; opacity: 1; }
