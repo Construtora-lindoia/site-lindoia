@@ -147,12 +147,15 @@ h2 {
 }
 
 @media (max-width: 640px) {
-  .nav { height: 62px; gap: 10px; }
-  .nav .logo img { height: 32px; }
-  .nav .logo-piso, .nav .logo-sep { display: none; }
+  .nav { height: 62px; gap: 8px; }
+  .nav .logos { gap: 10px; }
+  .nav .logo img { height: 30px; }
+  .nav .logo-piso img { height: 24px; }
+  .nav .logo-sep { height: 26px; }
   .nav .btn-orc { display: none; }
   .site-header.rolou .nav { height: 56px; }
-  .site-header.rolou .nav .logo img { height: 28px; }
+  .site-header.rolou .nav .logo img { height: 27px; }
+  .site-header.rolou .nav .logo-piso img { height: 21px; }
 }
 
 /* páginas internas — cabeçalho */
