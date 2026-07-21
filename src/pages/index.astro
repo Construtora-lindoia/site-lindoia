@@ -326,7 +326,11 @@ const produtos = (await getCollection('produtos'))
   .escura .eyebrow i { color: #6e6e6e; }
   .escura .lead { color: #c9c9c9; }
   .escura .sobre-grid li { color: #d3d3d3; }
-  .escura img { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4); }
+  .escura img {
+    background: #fff;
+    padding: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  }
 </style>
 
 <script>
