@@ -50,6 +50,26 @@ import { SITE } from '../lib/site';
       </div>
     </div>
   </section>
+
+  <section class="mapa-sec">
+    <div class="wrap">
+      <div class="eyebrow">Onde estamos</div>
+      <h2>Sede em Sinop-MT</h2>
+      <p class="lead" style="margin-bottom:26px">Avenida Foz do Iguaçu, 444. Venha conhecer a fábrica.</p>
+    </div>
+    <div class="mapa">
+      <iframe
+        title="Mapa da Construtora Lindóia em Sinop-MT"
+        src="https://maps.google.com/maps?q=Avenida%20Foz%20do%20Iguacu%2C%20444%2C%20Sinop%20-%20MT&t=&z=15&ie=UTF8&iwloc=&output=embed"
+        width="100%"
+        height="440"
+        style="border:0"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -61,4 +81,8 @@ import { SITE } from '../lib/site';
   .card .btn { margin-top: 16px; color: #fff; }
   .card .btn:hover { color: #fff; }
   @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+
+  .mapa-sec { padding-bottom: 0; }
+  .mapa { margin-top: 8px; }
+  .mapa iframe { display: block; filter: grayscale(0.2); }
 </style>
