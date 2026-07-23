@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { SITE, SEGMENTOS } from '../../lib/site';
+import { SOLUCOES } from '../../lib/solucoes';
+
+export async function getStaticPaths() {
+  return SOLUCOES.map((s) => ({ params: { slug: s.slug }, props: { solucao: s } }));
+}
+
+const { solucao } = Astro.props;
+
+const todas = (await getCollection('obras')).sort((a, b) => a.data.ordem - b.data.ordem);
+const obras = solucao.segmentoObras
+  ? todas.filter((o) => o.data.segmento === solucao.segmentoObras)
+  : todas.filter((o) => o.data.destaque).slice(0, 6);
+---
+
+<Layout title={solucao.eyebrow} description={solucao.descricao}>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">{solucao.eyebrow}</div>
+      <h1>{solucao.titulo}</h1>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap sol-hero">
+      <div class="sol-texto">
+        <p>{solucao.texto}</p>
+        <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Peça um orçamento</a>
+      </div>
+      <img src={solucao.imagem} alt={`Obra de ${solucao.eyebrow} da Construtora Lindóia`} />
+    </div>
+  </section>
+
+  {obras.length > 0 && (
+    <section class="alt">
+      <div class="wrap">
+        <div class="eyebrow">{solucao.segmentoObras ? 'Nesse segmento' : 'Exemplos de entregas'}</div>
+        <h2>Obras que entregamos</h2>
+        <div class="obras-grid">
+          {obras.map((obra) => (
+            <a class="obra-card" href={`/obras/${obra.id}/`}>
+              <img src={obra.data.capa} alt={`Obra ${obra.data.titulo}`} loading="lazy" />
+              <figcaption>
+                <span>{SEGMENTOS[obra.data.segmento]}</span>
+                <b>{obra.data.titulo}{obra.data.cidade ? ` · ${obra.data.cidade}` : ''}</b>
+              </figcaption>
+            </a>
+          ))}
+        </div>
+        <p style="margin-top:30px"><a class="btn" href="/obras/">Ver todas as obras</a></p>
+      </div>
+    </section>
+  )}
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>Vamos construir juntos?</h2>
+      <p>Fale com o nosso comercial e receba o orçamento da sua obra.</p>
+      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .sol-hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 50px; align-items: center; }
+  .sol-texto p { font-size: 1.08rem; color: #444; line-height: 1.7; margin-bottom: 28px; }
+  .sol-hero img { width: 100%; border-radius: 4px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12); }
+  @media (max-width: 860px) {
+    .sol-hero { grid-template-columns: 1fr; gap: 30px; }
+    .sol-hero img { order: -1; }
+  }
+</style>

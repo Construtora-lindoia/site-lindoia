@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SOLUCOES } from '../../lib/solucoes';
+---
+
+<Layout
+  title="Soluções"
+  description="As soluções da Construtora Lindóia: agroindústria, comercial e varejo, indústria, infraestrutura e obras turnkey em estrutura pré-moldada. Sinop-MT."
+>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">Soluções</div>
+      <h1>O que construímos</h1>
+      <p>Do projeto à entrega, com fabricação própria. Escolha o segmento e veja como a Lindóia atua.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="sol-cards">
+        {SOLUCOES.map((s) => (
+          <a class="sol-card" href={`/solucoes/${s.slug}/`}>
+            <div class="sc-img"><img src={s.imagem} alt={s.eyebrow} loading="lazy" /></div>
+            <div class="sc-info">
+              <span>{s.eyebrow}</span>
+              <b>{s.titulo}</b>
+              <em>Ver detalhes →</em>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .sol-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 760px) { .sol-cards { grid-template-columns: 1fr; } }
+  .sol-card { background: #fff; border: 1px solid #e6e6e6; display: block; transition: box-shadow 0.15s, transform 0.15s; }
+  .sol-card:hover { transform: translateY(-3px); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.1); }
+  .sc-img { aspect-ratio: 16 / 9; overflow: hidden; background: var(--cinza-claro); }
+  .sc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .sol-card:hover .sc-img img { transform: scale(1.05); }
+  .sc-info { padding: 24px; }
+  .sc-info span { color: var(--vermelho); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; }
+  .sc-info b { display: block; font-size: 1.15rem; margin: 8px 0 12px; line-height: 1.3; }
+  .sc-info em { font-style: normal; font-weight: 700; font-size: 0.82rem; color: var(--grafite); }
+</style>
