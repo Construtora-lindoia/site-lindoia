@@ -73,6 +73,37 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       </svg>
     </a>
     <script is:inline>
+      // sensor de visitas (sem cookie, sem dado pessoal) — alimenta a aba Visitas do painel
+      (function () {
+        try {
+          if (navigator.webdriver) return; // ignora bots e capturas automáticas
+          var path = location.pathname;
+          if (path.indexOf('/admin') === 0) return;
+          var sid = sessionStorage.getItem('lin_sid');
+          if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem('lin_sid', sid); }
+          var origem = 'Direto';
+          var utm = new URLSearchParams(location.search).get('utm_source');
+          var ref = document.referrer;
+          if (utm) origem = utm;
+          else if (ref) {
+            try {
+              var h = new URL(ref).hostname.replace(/^www\./, '');
+              if (h === location.hostname) origem = 'Direto';
+              else if (/google\./.test(h)) origem = 'Google';
+              else if (/bing\./.test(h)) origem = 'Bing';
+              else if (/instagram\./.test(h)) origem = 'Instagram';
+              else if (/facebook\.|(^|\.)fb\./.test(h)) origem = 'Facebook';
+              else if (/whatsapp|wa\.me/.test(h)) origem = 'WhatsApp';
+              else origem = h;
+            } catch (e) {}
+          }
+          var dispositivo = Math.min(screen.width || 9999, window.innerWidth || 9999) < 768 ? 'mobile' : 'desktop';
+          var corpo = JSON.stringify({ caminho: path, origem: origem, dispositivo: dispositivo, sessao: sid });
+          if (navigator.sendBeacon) navigator.sendBeacon('/api/pageviews', new Blob([corpo], { type: 'application/json' }));
+          else fetch('/api/pageviews', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: corpo, keepalive: true });
+        } catch (e) {}
+      })();
+
       (function () {
         // header encolhe e ganha vidro ao rolar
         var hd = document.querySelector('.site-header');

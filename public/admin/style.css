@@ -458,6 +458,36 @@ button { font-family: inherit; cursor: pointer; }
 .aviso-banco b { text-transform: uppercase; font-size: 0.85rem; }
 .aviso-banco p { font-size: 0.85rem; color: #6b7280; margin-top: 8px; }
 
+/* ---------- visitas / analytics ---------- */
+.v-topo { display: flex; justify-content: flex-end; margin-bottom: 18px; }
+.v-periodo { display: inline-flex; background: #e9eaee; border-radius: 10px; padding: 4px; gap: 4px; }
+.v-periodo button {
+  border: none; background: transparent; border-radius: 7px;
+  padding: 7px 16px; font-family: inherit; font-weight: 700; font-size: 0.78rem;
+  color: var(--texto-2); cursor: pointer;
+}
+.v-periodo button.on { background: #fff; color: var(--grafite); box-shadow: var(--sombra); }
+.v-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 18px; }
+.v-kpi { background: #fff; border-radius: 14px; padding: 22px 24px; box-shadow: var(--sombra); }
+.v-kpi b { display: block; font-size: 1.9rem; font-weight: 800; color: var(--grafite); line-height: 1.1; }
+.v-kpi small { color: var(--texto-2); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.v-card { background: #fff; border-radius: 14px; padding: 22px 24px; box-shadow: var(--sombra); margin-bottom: 18px; }
+.v-card-tit { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--grafite); margin-bottom: 18px; }
+.v-chart { display: flex; align-items: flex-end; gap: 3px; height: 150px; }
+.v-chart .vbar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
+.v-chart .vbar i { width: 100%; max-width: 26px; min-height: 2px; background: var(--vermelho); border-radius: 3px 3px 0 0; transition: opacity 0.15s; }
+.v-chart .vbar:hover i { opacity: 0.7; }
+.v-chart .vbar em { position: absolute; bottom: -18px; font-style: normal; font-size: 0.6rem; color: #b6bcc6; white-space: nowrap; }
+.v-chart { margin-bottom: 20px; }
+.v-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 800px) { .v-kpis, .v-duas { grid-template-columns: 1fr; } }
+.vrow { display: flex; align-items: center; gap: 12px; margin-bottom: 11px; }
+.vrow-lbl { flex: 0 0 38%; font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vrow-bar { flex: 1; height: 8px; background: #eef0f3; border-radius: 5px; overflow: hidden; }
+.vrow-bar i { display: block; height: 100%; background: var(--vermelho); border-radius: 5px; }
+.vrow-n { flex: 0 0 auto; font-size: 0.82rem; font-weight: 700; color: var(--texto-2); min-width: 26px; text-align: right; }
+.v-vazio { color: var(--texto-2); font-size: 0.85rem; }
+
 /* spinner */
 .gira {
   width: 16px;

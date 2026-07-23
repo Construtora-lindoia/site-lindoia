@@ -33,6 +33,9 @@ let aba = 'obras';
 let itens = { obras: [], produtos: [], blog: [], leads: [] };
 let leadsErro = null;
 let leadsCarregado = false;
+let visitas = null;
+let visitasErro = null;
+let visitasDias = 30;
 let editando = null; // item aberto no modal
 let fotosEdit = []; // [{path, url, novo:File|null}]
 let salvando = false;
@@ -307,21 +310,27 @@ function render() {
           <button data-aba="produtos" class="${aba === 'produtos' ? 'on' : ''}">Produtos<span>${itens.produtos.length}</span></button>
           <button data-aba="blog" class="${aba === 'blog' ? 'on' : ''}">Blog<span>${itens.blog.length}</span></button>
           <button data-aba="leads" class="${aba === 'leads' ? 'on' : ''}">Leads<span>${itens.leads.filter((l) => l.status === 'novo').length || itens.leads.length}</span></button>
+          <button data-aba="visitas" class="${aba === 'visitas' ? 'on' : ''}">Visitas</button>
         </div>
-        <button class="btn" id="bt-novo">+ ${{ obras: 'Nova obra', produtos: 'Novo produto', blog: 'Novo post', leads: 'Novo lead' }[aba]}</button>
+        ${aba === 'visitas' ? '' : `<button class="btn" id="bt-novo">+ ${{ obras: 'Nova obra', produtos: 'Novo produto', blog: 'Novo post', leads: 'Novo lead' }[aba]}</button>`}
       </div>
       <div id="grade"></div>
     </main>`;
 
   $('#bt-sair').onclick = sair;
-  $('#bt-novo').onclick = () =>
-    aba === 'leads' ? abrirLeadManual() : aba === 'blog' ? abrirEditorBlog(null) : abrirEditor(null);
+  if ($('#bt-novo'))
+    $('#bt-novo').onclick = () =>
+      aba === 'leads' ? abrirLeadManual() : aba === 'blog' ? abrirEditorBlog(null) : abrirEditor(null);
   document.querySelectorAll('.abas button').forEach((b) => {
     b.onclick = async () => {
       aba = b.dataset.aba;
       render();
       if (aba === 'leads' && !leadsCarregado) {
         await carregarLeads();
+        render();
+      }
+      if (aba === 'visitas' && !visitas) {
+        await carregarVisitas();
         render();
       }
     };
@@ -331,6 +340,7 @@ function render() {
 
 function renderGrade() {
   if (aba === 'leads') return renderLeads();
+  if (aba === 'visitas') return renderVisitas();
   const lista = itens[aba];
   const g = $('#grade');
   if (!lista.length) {
@@ -940,6 +950,109 @@ function abrirLeadManual() {
       toast('Erro: ' + e.message, 'erro');
     }
   };
+}
+
+/* ============ visitas ============ */
+async function carregarVisitas() {
+  try {
+    visitasErro = null;
+    const r = await fetch('/api/pageviews?dias=' + visitasDias, {
+      headers: { Authorization: 'token ' + token },
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'Erro ' + r.status);
+    visitas = j;
+  } catch (e) {
+    visitasErro = e.message;
+    visitas = null;
+  }
+}
+
+function renderVisitas() {
+  const g = $('#grade');
+  g.className = '';
+  if (!visitas && !visitasErro) {
+    g.innerHTML = '<div class="carregando"><span class="gira escuro"></span></div>';
+    return;
+  }
+  if (visitasErro) {
+    g.innerHTML = `<div class="aviso-banco">
+      <b>Relatório de visitas ainda sem dados</b>
+      <p>${esc(visitasErro)}</p>
+      <p>Precisa do banco de dados configurado (o mesmo dos leads). Assim que o site receber visitas, os números aparecem aqui.</p>
+    </div>`;
+    return;
+  }
+  const v = visitas;
+
+  // completa os dias sem visita pra o gráfico ficar contínuo
+  const mapa = {};
+  v.porDia.forEach((d) => (mapa[d.dia] = d));
+  const serie = [];
+  const hoje = new Date();
+  for (let i = v.dias - 1; i >= 0; i--) {
+    const d = new Date(hoje);
+    d.setDate(hoje.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    serie.push({ dia: key, visitas: (mapa[key] && mapa[key].visitas) || 0 });
+  }
+  const maxV = Math.max(1, ...serie.map((s) => s.visitas));
+  const passo = Math.ceil(serie.length / 12);
+  const barras = serie
+    .map((s, i) => {
+      const h = Math.round((s.visitas / maxV) * 100);
+      const rot = i % passo === 0 ? s.dia.slice(8) + '/' + s.dia.slice(5, 7) : '';
+      return `<div class="vbar" title="${s.dia.split('-').reverse().join('/')}: ${s.visitas} visita(s)">
+        <i style="height:${h}%"></i><em>${rot}</em></div>`;
+    })
+    .join('');
+
+  const linha = (lbl, n, tot) =>
+    `<div class="vrow"><span class="vrow-lbl">${esc(lbl)}</span>
+      <span class="vrow-bar"><i style="width:${Math.round((n / (tot || 1)) * 100)}%"></i></span>
+      <span class="vrow-n">${n}</span></div>`;
+
+  const totPag = v.paginas.reduce((a, p) => a + p.n, 0);
+  const listaPaginas = v.paginas
+    .map((p) => linha(p.caminho === '/' ? 'Página inicial' : p.caminho, p.n, totPag))
+    .join('');
+  const totOrig = v.origens.reduce((a, o) => a + o.n, 0);
+  const listaOrigens = v.origens.map((o) => linha(o.origem, o.n, totOrig)).join('');
+
+  const disp = {};
+  v.dispositivos.forEach((d) => (disp[d.dispositivo] = d.n));
+  const dmob = disp.mobile || 0;
+  const dtot = Math.max(1, dmob + (disp.desktop || 0));
+
+  g.innerHTML = `
+    <div class="v-topo">
+      <div class="v-periodo">
+        ${[7, 30, 90].map((d) => `<button data-d="${d}" class="${visitasDias === d ? 'on' : ''}">${d} dias</button>`).join('')}
+      </div>
+    </div>
+    <div class="v-kpis">
+      <div class="v-kpi"><b>${v.total.visitas.toLocaleString('pt-BR')}</b><small>visitas no período</small></div>
+      <div class="v-kpi"><b>${v.total.pageviews.toLocaleString('pt-BR')}</b><small>páginas vistas</small></div>
+      <div class="v-kpi"><b>${Math.round((dmob / dtot) * 100)}%</b><small>vieram do celular</small></div>
+    </div>
+    <div class="v-card">
+      <div class="v-card-tit">Visitas por dia</div>
+      <div class="v-chart">${barras}</div>
+    </div>
+    <div class="v-duas">
+      <div class="v-card"><div class="v-card-tit">Páginas mais vistas</div>${listaPaginas || '<p class="v-vazio">Sem dados ainda</p>'}</div>
+      <div class="v-card"><div class="v-card-tit">De onde vieram</div>${listaOrigens || '<p class="v-vazio">Sem dados ainda</p>'}</div>
+    </div>`;
+
+  g.querySelectorAll('.v-periodo button').forEach((b) => {
+    b.onclick = async () => {
+      visitasDias = +b.dataset.d;
+      visitas = null;
+      renderVisitas();
+      await carregarVisitas();
+      renderVisitas();
+    };
+  });
 }
 
 /* ============ boot ============ */
