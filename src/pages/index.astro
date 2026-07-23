@@ -15,7 +15,7 @@ const obrasHome = destaques.length >= 3 ? destaques : obras.slice(0, 6);
 
 const produtos = (await getCollection('produtos'))
   .sort((a, b) => a.data.ordem - b.data.ordem)
-  .slice(0, 5);
+  .slice(0, 6);
 ---
 
 <Layout>
@@ -338,15 +338,6 @@ const produtos = (await getCollection('produtos'))
     background: #fff;
     padding: 18px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-  }
-
-  /* mobile: centraliza o último produto quando fica órfão (evita o vão branco) */
-  @media (max-width: 600px) {
-    .prod-grid > .prod:last-child:nth-child(odd) {
-      grid-column: 1 / -1;
-      max-width: calc(50% - 9px);
-      margin-inline: auto;
-    }
   }
 </style>
 

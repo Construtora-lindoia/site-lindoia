@@ -255,7 +255,7 @@ h2 {
 .filtros .on { background: var(--vermelho); border-color: var(--vermelho); color: #fff; }
 
 /* produtos */
-.prod-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; margin-top: 44px; }
+.prod-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 44px; }
 .prod {
   border: 1px solid #e6e6e6;
   background: #fff;
