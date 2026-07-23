@@ -339,6 +339,15 @@ const produtos = (await getCollection('produtos'))
     padding: 18px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
   }
+
+  /* mobile: centraliza o último produto quando fica órfão (evita o vão branco) */
+  @media (max-width: 600px) {
+    .prod-grid > .prod:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      max-width: calc(50% - 9px);
+      margin-inline: auto;
+    }
+  }
 </style>
 
 <script>
