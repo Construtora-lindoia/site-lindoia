@@ -5,7 +5,7 @@ import { neon } from '@neondatabase/serverless';
 
 /* Repositório do site (dono/nome) — usado pra autorizar quem edita o painel.
    Definir GITHUB_REPO nas variáveis da Netlify (ex.: construtoralindoia/site-lindoia). */
-export const REPO = (process.env.GITHUB_REPO || 'Lindoia1997/site-lindoia').trim();
+export const REPO = (process.env.GITHUB_REPO || 'Construtora-lindoia/site-lindoia').trim();
 
 let sql;
 export function db() {

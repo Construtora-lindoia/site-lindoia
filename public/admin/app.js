@@ -5,7 +5,7 @@
 
 /* ⚠️ Trocar REPO quando a conta/repo do cliente existir (ver tutorial-contas-jordano.md):
    ex.: 'construtoralindoia/site-lindoia' */
-const REPO = 'Lindoia1997/site-lindoia';
+const REPO = 'Construtora-lindoia/site-lindoia';
 const BRANCH = 'main';
 const GH = 'https://api.github.com';
 const SITE = ''; // vazio = mesma origem; o painel é servido do próprio site
