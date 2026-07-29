@@ -20,7 +20,7 @@ const produtos = (await getCollection('produtos'))
 
 <Layout>
   <section class="hero" id="topo">
-    <video autoplay muted loop playsinline poster="/img/obras/machadao-primavera-1.webp">
+    <video autoplay muted loop playsinline preload="auto" poster="/img/obras/machadao-primavera-1.webp">
       <source src="/video/hero.mp4" type="video/mp4" />
     </video>
     <div class="wrap">
@@ -380,5 +380,26 @@ const produtos = (await getCollection('produtos'))
       { threshold: 0.6 }
     );
     contadores.forEach((el) => io.observe(el));
+  }
+
+  // hero video: garante o autoplay mudo/inline no mobile (alguns navegadores bloqueiam sem um empurrão)
+  const heroVid = document.querySelector('.hero video') as HTMLVideoElement | null;
+  if (heroVid) {
+    const tentaTocar = () => {
+      heroVid.muted = true;
+      const pr = heroVid.play();
+      if (pr && typeof pr.catch === 'function') pr.catch(() => {});
+    };
+    tentaTocar();
+    heroVid.addEventListener('canplay', tentaTocar, { once: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tentaTocar(); });
+    // fallback: se o navegador insistir no bloqueio, toca no primeiro gesto do usuário
+    const noGesto = () => {
+      tentaTocar();
+      ['touchstart', 'click', 'scroll'].forEach((ev) => window.removeEventListener(ev, noGesto));
+    };
+    ['touchstart', 'click', 'scroll'].forEach((ev) =>
+      window.addEventListener(ev, noGesto, { once: true, passive: true })
+    );
   }
 </script>
