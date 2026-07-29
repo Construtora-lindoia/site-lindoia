@@ -1,5 +1,16 @@
 ---
 import { SITE, SEGMENTOS } from '../lib/site';
+
+interface Props {
+  segmentoPadrao?: string;
+  assunto?: string; // ex.: nome do produto — pré-preenche e personaliza o WhatsApp
+}
+const { segmentoPadrao = '', assunto = '' } = Astro.props;
+const seg = segmentoPadrao || (assunto ? 'produtos' : '');
+const msgPadrao = assunto ? `Tenho interesse em ${assunto}. ` : '';
+const waHref = assunto
+  ? `${SITE.whatsapp}?text=${encodeURIComponent(`Olá! Vim pelo site e tenho interesse em ${assunto}. Poderiam me passar um orçamento?`)}`
+  : SITE.whatsappCTA;
 ---
 
 <div class="form-orc" id="orcamento">
@@ -22,23 +33,27 @@ import { SITE, SEGMENTOS } from '../lib/site';
       <div class="fo-campo">
         <label for="fo-seg">Tipo de obra</label>
         <select id="fo-seg" name="segmento">
-          <option value="">Selecione…</option>
-          {Object.entries(SEGMENTOS).map(([v, l]) => <option value={v}>{l}</option>)}
-          <option value="produtos">Produtos pré-moldados</option>
+          <option value="" selected={seg === ''}>Selecione…</option>
+          {Object.entries(SEGMENTOS).map(([v, l]) => <option value={v} selected={v === seg}>{l}</option>)}
+          <option value="produtos" selected={seg === 'produtos'}>Produtos pré-moldados</option>
         </select>
       </div>
     </div>
     <div class="fo-campo">
       <label for="fo-msg">Conte sobre a sua obra</label>
-      <textarea id="fo-msg" name="mensagem" maxlength="2000" rows="4"></textarea>
+      <textarea id="fo-msg" name="mensagem" maxlength="2000" rows="4">{msgPadrao}</textarea>
     </div>
     <input type="text" name="site" tabindex="-1" autocomplete="off" class="fo-hp" aria-hidden="true" />
     <button class="btn" type="submit" id="fo-btn">Pedir orçamento</button>
-    <p class="fo-alt">Ou, se preferir: <a href={SITE.whatsapp} target="_blank" rel="noopener">chama direto no WhatsApp: {SITE.telefoneComercial}</a></p>
+    <div class="fo-ou"><span>ou fale agora</span></div>
+    <a class="fo-zap" href={waHref} target="_blank" rel="noopener" aria-label="Chamar no WhatsApp">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.04 4C9.42 4 4.04 9.38 4.04 16c0 2.11.55 4.17 1.6 5.99L4 28l6.18-1.62A11.9 11.9 0 0 0 16.04 28c6.62 0 12-5.38 12-12S22.66 4 16.04 4zm0 21.82c-1.84 0-3.65-.5-5.23-1.44l-.37-.22-3.67.96.98-3.58-.24-.37a9.8 9.8 0 0 1-1.5-5.2c0-5.42 4.41-9.82 9.83-9.82 2.62 0 5.09 1.02 6.94 2.88a9.75 9.75 0 0 1 2.87 6.94c0 5.42-4.4 9.82-9.82 9.82zm5.39-7.35c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.5.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.19-.24-.57-.48-.5-.66-.51l-.56-.01c-.2 0-.52.08-.79.38-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.28.17-1.41-.07-.13-.27-.2-.56-.35z"/></svg>
+      Chamar no WhatsApp
+    </a>
   </form>
   <div id="fo-ok" class="fo-ok" hidden>
     <b>✓ Recebemos seu pedido!</b>
-    <p>Nosso comercial vai te chamar no WhatsApp. Se quiser adiantar: <a href={SITE.whatsapp} target="_blank" rel="noopener">clica aqui e fala com a gente agora</a>.</p>
+    <p>Nosso comercial vai te chamar no WhatsApp. Se quiser adiantar: <a href={SITE.whatsappCTA} target="_blank" rel="noopener">clica aqui e fala com a gente agora</a>.</p>
   </div>
 </div>
 
@@ -67,8 +82,12 @@ import { SITE, SEGMENTOS } from '../lib/site';
   }
   .fo-campo textarea { resize: vertical; }
   .fo-hp { position: absolute; left: -9999px; opacity: 0; height: 0; }
-  .fo-alt { font-size: 0.8rem; color: #6b7280; margin-top: 14px; }
-  .fo-alt a { color: var(--vermelho); font-weight: 700; }
+  #fo-btn { width: 100%; display: block; }
+  .fo-ou { display: flex; align-items: center; gap: 12px; margin: 14px 0; color: #9ca3af; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .fo-ou::before, .fo-ou::after { content: ''; flex: 1; height: 1px; background: #e6e6e6; }
+  .fo-zap { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: #25d366; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85rem; padding: 15px 24px; text-decoration: none; transition: background 0.2s; }
+  .fo-zap:hover { background: #1da851; }
+  .fo-zap svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
   .fo-ok { border: 1px solid #bbe5c8; background: #f0faf3; padding: 26px; }
   .fo-ok b { text-transform: uppercase; }
   .fo-ok p { margin-top: 8px; color: #4a4a4a; font-size: 0.92rem; }

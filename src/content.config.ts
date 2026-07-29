@@ -21,6 +21,8 @@ const produtos = defineCollection({
     nome: z.string(),
     imagem: z.string(),
     resumo: z.string(),
+    fotos: z.array(z.string()).default([]),
+    especificacoes: z.array(z.string()).default([]),
     ordem: z.number().default(99),
   }),
 });
@@ -33,6 +35,8 @@ const blog = defineCollection({
     data: z.coerce.date(),
     capa: z.string().optional(),
     rascunho: z.boolean().default(false),
+    obras: z.array(z.string()).default([]),
+    produtos: z.array(z.string()).default([]),
   }),
 });
 

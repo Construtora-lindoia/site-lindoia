@@ -15,6 +15,17 @@ const fmtData = post.data.data.toLocaleDateString('pt-BR', {
   month: 'long',
   year: 'numeric',
 });
+
+const relObras = post.data.obras.length
+  ? (await getCollection('obras'))
+      .filter((o) => post.data.obras.includes(o.id))
+      .sort((a, b) => post.data.obras.indexOf(a.id) - post.data.obras.indexOf(b.id))
+  : [];
+const relProdutos = post.data.produtos.length
+  ? (await getCollection('produtos'))
+      .filter((p) => post.data.produtos.includes(p.id))
+      .sort((a, b) => post.data.produtos.indexOf(a.id) - post.data.produtos.indexOf(b.id))
+  : [];
 ---
 
 <Layout title={post.data.titulo} description={post.data.descricao}>
@@ -48,11 +59,33 @@ const fmtData = post.data.data.toLocaleDateString('pt-BR', {
     </div>
   </article>
 
+  {(relObras.length > 0 || relProdutos.length > 0) && (
+    <section class="rel">
+      <div class="wrap">
+        <h2>Veja também</h2>
+        <div class="rel-grid">
+          {relObras.map((o) => (
+            <a class="rel-card" href={`/obras/${o.id}/`}>
+              <img src={o.data.capa} alt={`Obra ${o.data.titulo}`} loading="lazy" />
+              <div class="rel-meta"><span>Obra</span><b>{o.data.titulo}</b></div>
+            </a>
+          ))}
+          {relProdutos.map((p) => (
+            <a class="rel-card rel-prod" href={`/produtos/${p.id}/`}>
+              <img src={p.data.imagem} alt={p.data.nome} loading="lazy" />
+              <div class="rel-meta"><span>Produto</span><b>{p.data.nome}</b></div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <section class="cta">
     <div class="wrap">
       <h2>Vamos construir juntos?</h2>
       <p>Fale com o nosso comercial e receba o orçamento da sua obra.</p>
-      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp</a>
+      <a class="btn" href={SITE.whatsappCTA} target="_blank" rel="noopener">Chamar no WhatsApp</a>
     </div>
   </section>
 </Layout>
@@ -81,4 +114,19 @@ const fmtData = post.data.data.toLocaleDateString('pt-BR', {
     margin: 24px 0;
   }
   .sec-btn { background: var(--grafite); }
+
+  .prosa :global(a) { color: var(--vermelho); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+  .rel { background: #f6f6f6; padding: 60px 0; }
+  .rel h2 { font-size: 1.4rem; margin-bottom: 24px; }
+  .rel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .rel-card { display: block; background: #fff; border: 1px solid #e6e6e6; color: inherit; text-decoration: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .rel-card:hover { border-color: var(--vermelho); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06); }
+  .rel-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+  .rel-prod img { object-fit: contain; background: #f5f5f5; padding: 14px; }
+  .rel-meta { padding: 16px; }
+  .rel-meta span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--vermelho); font-weight: 700; }
+  .rel-meta b { display: block; margin-top: 4px; font-size: 0.95rem; color: var(--grafite); }
+  @media (max-width: 800px) { .rel-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .rel-grid { grid-template-columns: 1fr; } }
 </style>

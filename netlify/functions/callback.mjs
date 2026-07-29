@@ -1,8 +1,9 @@
-export default async function handler(req, res) {
-  const { code } = req.query;
+export const config = { path: '/api/callback' };
+
+export default async (req) => {
+  const code = new URL(req.url).searchParams.get('code');
   if (!code) {
-    res.status(400).send('Código de autorização ausente');
-    return;
+    return new Response('Código de autorização ausente', { status: 400 });
   }
 
   const r = await fetch('https://github.com/login/oauth/access_token', {
@@ -20,8 +21,8 @@ export default async function handler(req, res) {
     ? `authorization:github:error:${JSON.stringify(data)}`
     : `authorization:github:success:${JSON.stringify({ token: data.access_token, provider: 'github' })}`;
 
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.status(200).send(`<!doctype html>
+  return new Response(
+    `<!doctype html>
 <html><body><script>
   (function () {
     function receive(e) {
@@ -33,5 +34,7 @@ export default async function handler(req, res) {
   })();
 </script>
 <p>Autenticando… pode fechar esta janela se não fechar sozinha.</p>
-</body></html>`);
-}
+</body></html>`,
+    { status: 200, headers: { 'content-type': 'text/html; charset=utf-8' } }
+  );
+};

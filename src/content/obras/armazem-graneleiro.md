@@ -9,4 +9,4 @@ ordem: 5
 destaque: true
 ---
 
-Armazém graneleiro para armazenagem de grãos, segmento em que a Construtora Lindóia é especialista há três décadas.
+Armazém graneleiro para armazenagem de grãos, segmento em que a Construtora Lindóia é especialista há quase três décadas.

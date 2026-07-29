@@ -1,0 +1,22 @@
+# Netlify — site estático (Astro) + funções serverless em netlify/functions/
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Cabeçalhos de segurança (baixo risco — não quebram o painel).
+# CSP fica de fora por enquanto: precisa de um passe de teste contra o /admin
+# antes de ligar. HSTS SEM includeSubDomains de propósito: o domínio tem
+# subdomínios de e-mail (mail/webmail/smtp/imap/pop) que não devem ser
+# forçados a HTTPS.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Strict-Transport-Security = "max-age=31536000"

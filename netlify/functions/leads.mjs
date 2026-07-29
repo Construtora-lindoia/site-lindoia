@@ -1,15 +1,16 @@
-import { neon } from '@neondatabase/serverless';
+import { db, autorizado, corta, json, notAllowed } from '../lib/util.mjs';
 
-const REPO = 'RAKIaero/construtora-lindoia';
+export const config = { path: '/api/leads' };
+
 const STATUS_VALIDOS = ['novo', 'contato', 'orcamento', 'fechado', 'perdido'];
 
-let sql;
-function db() {
-  const url = (process.env.DATABASE_URL || process.env.POSTGRES_URL || '').trim();
-  if (!url) throw new Error('Banco de dados ainda não configurado na Vercel');
-  if (!sql) sql = neon(url);
-  return sql;
-}
+const SEG_ROTULOS = {
+  agroindustria: 'Agroindústria',
+  comercial: 'Comercial e Varejo',
+  industria: 'Indústria',
+  infraestrutura: 'Infraestrutura',
+  produtos: 'Produtos pré-moldados',
+};
 
 let tabelaPronta = false;
 async function garanteTabela() {
@@ -32,43 +33,13 @@ async function garanteTabela() {
   tabelaPronta = true;
 }
 
-/* Painel: autoriza quem tem acesso de escrita no repositório do site */
-const cacheAuth = new Map();
-async function autorizado(req) {
-  const t = (req.headers.authorization || '').replace(/^token\s+/i, '').trim();
-  if (!t) return false;
-  const hit = cacheAuth.get(t);
-  if (hit && hit.exp > Date.now()) return hit.ok;
-  let ok = false;
-  try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}`, {
-      headers: { Authorization: 'token ' + t, Accept: 'application/vnd.github+json' },
-    });
-    if (r.ok) {
-      const j = await r.json();
-      ok = !!(j.permissions && (j.permissions.push || j.permissions.admin));
-    }
-  } catch {}
-  cacheAuth.set(t, { ok, exp: Date.now() + 5 * 60 * 1000 });
-  return ok;
-}
-
-const corta = (v, n) => String(v ?? '').trim().slice(0, n);
-
-const SEG_ROTULOS = {
-  agroindustria: 'Agroindústria',
-  comercial: 'Comercial e Varejo',
-  industria: 'Indústria',
-  infraestrutura: 'Infraestrutura',
-  produtos: 'Produtos pré-moldados',
-};
-
 /* Aviso por e-mail quando entra lead. Se o Resend não estiver
    configurado, apenas não envia; o lead é salvo do mesmo jeito. */
 async function notificaLead(lead) {
   const key = (process.env.RESEND_API_KEY || '').trim();
   const para = (process.env.LEAD_NOTIFY_TO || '').trim();
   if (!key || !para) return;
+  const siteUrl = (process.env.SITE_URL || 'https://construtoralindoia.com.br').trim().replace(/\/$/, '');
   const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const linha = (rotulo, valor) =>
     valor
@@ -97,24 +68,26 @@ async function notificaLead(lead) {
         </table>
         <p style="margin-top:20px">
           ${waLink ? `<a href="${waLink}" style="background:#16a34a;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;font-weight:bold;margin-right:8px">Responder no WhatsApp</a>` : ''}
-          <a href="https://construtora-lindoia.vercel.app/admin" style="background:#db4d4b;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;font-weight:bold">Abrir o funil</a>
+          <a href="${siteUrl}/admin" style="background:#db4d4b;color:#fff;padding:10px 18px;text-decoration:none;border-radius:6px;font-weight:bold">Abrir o funil</a>
         </p>
       </div>`,
     }),
   });
 }
 
-export default async function handler(req, res) {
+export default async (req) => {
   try {
     await garanteTabela();
+    const method = req.method;
 
-    if (req.method === 'POST') {
-      const b = req.body || {};
-      if (corta(b.site, 10)) return res.status(200).json({ ok: true }); // honeypot: finge sucesso
+    if (method === 'POST') {
+      let b = {};
+      try { b = await req.json(); } catch { b = {}; }
+      if (corta(b.site, 10)) return json({ ok: true }); // honeypot: finge sucesso
       const nome = corta(b.nome, 120);
       const telefone = corta(b.telefone, 40);
       if (nome.length < 2 || telefone.length < 8) {
-        return res.status(400).json({ error: 'Preencha nome e WhatsApp.' });
+        return json({ error: 'Preencha nome e WhatsApp.' }, 400);
       }
       const [lead] = await db()`INSERT INTO leads (nome, telefone, email, cidade, segmento, mensagem, origem, utm)
         VALUES (${nome}, ${telefone}, ${corta(b.email, 120)}, ${corta(b.cidade, 80)},
@@ -124,20 +97,21 @@ export default async function handler(req, res) {
       try {
         await notificaLead(lead);
       } catch {} // e-mail nunca derruba o cadastro do lead
-      return res.status(201).json({ ok: true, id: lead.id });
+      return json({ ok: true, id: lead.id }, 201);
     }
 
-    if (req.method === 'GET') {
-      if (!(await autorizado(req))) return res.status(401).json({ error: 'Não autorizado' });
+    if (method === 'GET') {
+      if (!(await autorizado(req))) return json({ error: 'Não autorizado' }, 401);
       const leads = await db()`SELECT * FROM leads ORDER BY criado_em DESC LIMIT 500`;
-      return res.status(200).json({ leads });
+      return json({ leads });
     }
 
-    if (req.method === 'PATCH') {
-      if (!(await autorizado(req))) return res.status(401).json({ error: 'Não autorizado' });
-      const b = req.body || {};
+    if (method === 'PATCH') {
+      if (!(await autorizado(req))) return json({ error: 'Não autorizado' }, 401);
+      let b = {};
+      try { b = await req.json(); } catch { b = {}; }
       const id = Number(b.id);
-      if (!id) return res.status(400).json({ error: 'id obrigatório' });
+      if (!id) return json({ error: 'id obrigatório' }, 400);
       const status = STATUS_VALIDOS.includes(b.status) ? b.status : null;
       const notas = typeof b.notas === 'string' ? corta(b.notas, 4000) : null;
       const [lead] = await db()`UPDATE leads SET
@@ -145,21 +119,20 @@ export default async function handler(req, res) {
           notas = COALESCE(${notas}, notas),
           atualizado_em = now()
         WHERE id = ${id} RETURNING *`;
-      if (!lead) return res.status(404).json({ error: 'Lead não encontrado' });
-      return res.status(200).json({ lead });
+      if (!lead) return json({ error: 'Lead não encontrado' }, 404);
+      return json({ lead });
     }
 
-    if (req.method === 'DELETE') {
-      if (!(await autorizado(req))) return res.status(401).json({ error: 'Não autorizado' });
-      const id = Number((req.query || {}).id);
-      if (!id) return res.status(400).json({ error: 'id obrigatório' });
+    if (method === 'DELETE') {
+      if (!(await autorizado(req))) return json({ error: 'Não autorizado' }, 401);
+      const id = Number(new URL(req.url).searchParams.get('id'));
+      if (!id) return json({ error: 'id obrigatório' }, 400);
       await db()`DELETE FROM leads WHERE id = ${id}`;
-      return res.status(200).json({ ok: true });
+      return json({ ok: true });
     }
 
-    res.setHeader('Allow', 'GET, POST, PATCH, DELETE');
-    return res.status(405).json({ error: 'Método não permitido' });
+    return notAllowed('GET, POST, PATCH, DELETE');
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return json({ error: e.message }, 500);
   }
-}
+};

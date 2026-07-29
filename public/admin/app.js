@@ -1,12 +1,14 @@
 /* Painel Construtora Lindóia — feito sob medida.
    Fluxo: login GitHub (OAuth já existente em /api/auth) → lê/grava
    arquivos de conteúdo direto no repositório via API do GitHub →
-   cada salvamento vira commit → Vercel republica o site. */
+   cada salvamento vira commit → Netlify republica o site. */
 
-const REPO = 'RAKIaero/construtora-lindoia';
+/* ⚠️ Trocar REPO quando a conta/repo do cliente existir (ver tutorial-contas-jordano.md):
+   ex.: 'construtoralindoia/site-lindoia' */
+const REPO = 'Lindoia1997/site-lindoia';
 const BRANCH = 'main';
 const GH = 'https://api.github.com';
-const SITE = 'https://construtora-lindoia.vercel.app';
+const SITE = ''; // vazio = mesma origem; o painel é servido do próprio site
 const DIR_OBRAS = 'src/content/obras';
 const DIR_PRODUTOS = 'src/content/produtos';
 const DIR_BLOG = 'src/content/blog';

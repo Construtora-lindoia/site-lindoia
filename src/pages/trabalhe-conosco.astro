@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../lib/site';
+
+const areas = [
+  'Obra e montagem',
+  'Fábrica de pré-moldados',
+  'Engenharia e projetos',
+  'Administrativo e comercial',
+  'Logística e frota própria',
+];
+
+const corpo = 'Olá! Gostaria de fazer parte do time da Construtora Lindóia. Segue meu currículo em anexo.\n\nNome:\nÁrea de interesse:\nCidade:';
+const mailtoCV = `mailto:${SITE.emailRH}?subject=${encodeURIComponent('Currículo — Trabalhe Conosco')}&body=${encodeURIComponent(corpo)}`;
+const zapRH = `${SITE.whatsappRH}?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de me candidatar a uma vaga na Construtora Lindóia.')}`;
+---
+
+<Layout
+  title="Trabalhe Conosco"
+  description="Faça parte do time da Construtora Lindóia. Há 29 anos construindo o Mato Grosso, com fabricação própria de pré-moldados. Envie o seu currículo."
+>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">Faça parte</div>
+      <h1>Trabalhe conosco</h1>
+      <p>Há 29 anos a Construtora Lindóia constrói o Mato Grosso — e é o nosso time que sustenta cada obra. Se você quer crescer numa empresa sólida, com fabricação própria e obras de grande porte, venha com a gente.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap duas-colunas">
+      <div>
+        <h2>Cresça junto com a Lindóia</h2>
+        <p class="texto">Buscamos gente comprometida, que valoriza segurança, qualidade e relações de longo prazo. Da fábrica ao canteiro, do projeto à entrega, cada função é essencial pra manter o padrão que construímos há quase três décadas.</p>
+        <p class="titulo-areas">Áreas em que atuamos</p>
+        <ul class="lista">
+          {areas.map((a) => <li>{a}</li>)}
+        </ul>
+        <p style="margin-top:28px"><a class="btn" href={mailtoCV}>Enviar currículo</a></p>
+        <p class="alt-email">Ou envie para <a href={`mailto:${SITE.emailRH}`}>{SITE.emailRH}</a> · ou <a href={zapRH} target="_blank" rel="noopener">fale com o RH no WhatsApp</a></p>
+      </div>
+      <img src="/img/institucional/sede.webp" alt="Sede da Construtora Lindóia em Sinop-MT" loading="lazy" />
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>Faça parte do nosso time</h2>
+      <p>Envie seu currículo e some com uma equipe que tem orgulho do que constrói.</p>
+      <a class="btn" href={mailtoCV}>Enviar currículo</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .duas-colunas img { width: 100%; }
+  .texto { color: #4a4a4a; margin-bottom: 16px; }
+  .titulo-areas { font-weight: 700; color: var(--grafite); margin-bottom: 4px; }
+  .lista { list-style: none; margin-top: 6px; }
+  .lista li { padding-left: 26px; position: relative; margin-bottom: 10px; color: #4a4a4a; }
+  .lista li::before { content: ''; position: absolute; left: 0; top: 10px; width: 12px; height: 3px; background: var(--vermelho); }
+  .alt-email { margin-top: 12px; font-size: 0.85rem; color: #6b7280; }
+  .alt-email a { color: var(--vermelho); font-weight: 600; }
+  @media (max-width: 900px) { .duas-colunas { grid-template-columns: 1fr; } }
+</style>

@@ -29,10 +29,16 @@ const isActive = (href: string) => (path === href || path.startsWith(href)) ? 'p
         <li><a href={l.href} aria-current={isActive(l.href)}>{l.label}</a></li>
       ))}
       <li class="so-mobile">
-        <a href={SITE.whatsapp} target="_blank" rel="noopener">Peça seu orçamento →</a>
+        <a href={SITE.whatsappCTA} target="_blank" rel="noopener">Peça seu orçamento →</a>
       </li>
     </ul>
-    <a class="btn btn-orc" href={SITE.whatsapp} target="_blank" rel="noopener">Peça seu orçamento</a>
+    <a class="nav-social" href={SITE.instagram} target="_blank" rel="noopener" aria-label="Instagram da Construtora Lindóia">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.9.07s-3.63 0-4.9-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2m0 1.98c-3.15 0-3.5.01-4.75.07-.9.04-1.38.19-1.7.32-.43.16-.73.36-1.06.68-.32.33-.52.63-.68 1.06-.13.32-.28.8-.32 1.7-.06 1.25-.07 1.6-.07 4.75s.01 3.5.07 4.75c.04.9.19 1.38.32 1.7.16.43.36.73.68 1.06.33.32.63.52 1.06.68.32.13.8.28 1.7.32 1.25.06 1.6.07 4.75.07s3.5-.01 4.75-.07c.9-.04 1.38-.19 1.7-.32.43-.16.73-.36 1.06-.68.32-.33.52-.63.68-1.06.13-.32.28-.8.32-1.7.06-1.25.07-1.6.07-4.75s-.01-3.5-.07-4.75c-.04-.9-.19-1.38-.32-1.7a2.9 2.9 0 0 0-.68-1.06 2.9 2.9 0 0 0-1.06-.68c-.32-.13-.8-.28-1.7-.32-1.25-.06-1.6-.07-4.75-.07m0 3.37a4.45 4.45 0 1 1 0 8.9 4.45 4.45 0 0 1 0-8.9m0 1.98a2.47 2.47 0 1 0 0 4.94 2.47 2.47 0 0 0 0-4.94m5.66-2.2a1.04 1.04 0 1 1-2.08 0 1.04 1.04 0 0 1 2.08 0"/></svg>
+    </a>
+    <a class="nav-social" href={SITE.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn da Construtora Lindóia">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+    </a>
+    <a class="btn btn-orc" href={SITE.whatsappCTA} target="_blank" rel="noopener">Peça seu orçamento</a>
     <button class="menu-bt" id="menu-bt" aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -50,3 +56,15 @@ const isActive = (href: string) => (path === href || path.startsWith(href)) ? 'p
     a.addEventListener('click', () => hd?.classList.remove('menu-aberto'))
   );
 </script>
+
+<style>
+  .nav-social {
+    display: inline-flex;
+    align-items: center;
+    color: var(--grafite);
+    margin-right: 12px;
+    transition: color 0.2s;
+  }
+  .nav-social:hover { color: var(--vermelho); }
+  .nav-social svg { width: 22px; height: 22px; }
+</style>

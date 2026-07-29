@@ -1,0 +1,101 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import FormOrcamento from '../../components/FormOrcamento.astro';
+
+export async function getStaticPaths() {
+  const produtos = await getCollection('produtos');
+  return produtos.map((produto) => ({ params: { slug: produto.id }, props: { produto } }));
+}
+
+const { produto } = Astro.props;
+const { Content } = await render(produto);
+const fotos = produto.data.fotos ?? [];
+---
+
+<Layout title={produto.data.nome} description={produto.data.resumo}>
+  <div class="page-head">
+    <div class="wrap">
+      <div class="eyebrow">Produtos · Fabricação própria</div>
+      <h1>{produto.data.nome}</h1>
+      <p>{produto.data.resumo}</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="prod-detalhe">
+        <div class="prod-media">
+          <div class="prod-foto">
+            <img src={produto.data.imagem} alt={produto.data.nome} loading="eager" />
+          </div>
+          {fotos.length > 0 && (
+            <div class="prod-galeria">
+              {fotos.map((foto, i) => (
+                <img src={foto} alt={`${produto.data.nome} — foto ${i + 2}`} loading="lazy" />
+              ))}
+            </div>
+          )}
+          <div class="prod-texto"><Content /></div>
+          {produto.data.especificacoes.length > 0 && (
+            <div class="prod-espec">
+              <h2>Especificações técnicas</h2>
+              <ul>
+                {produto.data.especificacoes.map((e) => <li>{e}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <aside class="prod-form">
+          <h2>Peça um orçamento</h2>
+          <p class="prod-form-sub">Preencha e o nosso comercial te chama no WhatsApp.</p>
+          <FormOrcamento assunto={produto.data.nome} />
+        </aside>
+      </div>
+
+      <p style="margin-top:44px"><a class="btn" href="/produtos/">← Todos os produtos</a></p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prod-detalhe {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .prod-foto { border: 1px solid #ececec; background: #f5f5f5; }
+  .prod-foto img { width: 100%; display: block; }
+  .prod-galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .prod-galeria img { width: 100%; height: 110px; object-fit: cover; background: #f5f5f5; border: 1px solid #ececec; }
+  .prod-texto { margin-top: 26px; max-width: 640px; color: #4a4a4a; font-size: 1.02rem; }
+  .prod-texto :global(p) { margin-bottom: 14px; }
+
+  .prod-form {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    padding: 28px;
+    position: sticky;
+    top: 24px;
+  }
+  .prod-form h2 { font-size: 1.25rem; }
+  .prod-form-sub { color: #6b7280; font-size: 0.9rem; margin: 4px 0 18px; }
+
+  @media (max-width: 900px) {
+    .prod-detalhe { grid-template-columns: 1fr; gap: 30px; }
+    .prod-form { position: static; }
+  }
+
+  .prod-espec { margin-top: 30px; border-top: 1px solid #ececec; padding-top: 24px; }
+  .prod-espec h2 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+  .prod-espec ul { list-style: none; }
+  .prod-espec li { padding: 10px 0 10px 22px; position: relative; border-bottom: 1px solid #f0f0f0; color: #4a4a4a; font-size: 0.95rem; }
+  .prod-espec li::before { content: ''; position: absolute; left: 0; top: 17px; width: 12px; height: 3px; background: var(--vermelho); }
+</style>

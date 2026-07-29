@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import MapaObras from '../../components/MapaObras.astro';
 import { SEGMENTOS, SITE } from '../../lib/site';
 
 const obras = (await getCollection('obras')).sort((a, b) => a.data.ordem - b.data.ordem);
@@ -15,9 +16,18 @@ const segmentosPresentes = [...new Set(obras.map((o) => o.data.segmento))];
     <div class="wrap">
       <div class="eyebrow">Portfólio</div>
       <h1>Nossas obras</h1>
-      <p>Três décadas de armazéns, silos, supermercados e plantas industriais construídos com estrutura pré-moldada de fabricação própria.</p>
+      <p>Quase três décadas de armazéns, silos, supermercados e plantas industriais construídos com estrutura pré-moldada de fabricação própria.</p>
     </div>
   </div>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="eyebrow">Presença nacional</div>
+      <h2>Onde já construímos</h2>
+      <p class="lead">Nascemos no norte de Mato Grosso e hoje entregamos obras em todo o Brasil — do Pará a Santa Catarina.</p>
+      <MapaObras />
+    </div>
+  </section>
 
   <section>
     <div class="wrap">
@@ -45,13 +55,15 @@ const segmentosPresentes = [...new Set(obras.map((o) => o.data.segmento))];
     <div class="wrap">
       <h2>Sua obra pode ser a próxima</h2>
       <p>Fale com o nosso comercial e receba o orçamento.</p>
-      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener">Chamar no WhatsApp</a>
+      <a class="btn" href={SITE.whatsappCTA} target="_blank" rel="noopener">Chamar no WhatsApp</a>
     </div>
   </section>
 </Layout>
 
 <style>
   .obra-card.hide { display: none; }
+  .obras-grid { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 600px) { .obras-grid { grid-template-columns: 1fr; } }
 </style>
 
 <script>

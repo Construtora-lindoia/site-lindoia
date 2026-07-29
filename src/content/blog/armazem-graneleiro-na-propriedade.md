@@ -4,6 +4,12 @@ descricao: "Armazenar a própria safra dá poder de negociação, corta gastos c
 data: 2026-07-22
 capa: /img/obras/armazem.webp
 rascunho: false
+obras:
+  - armazem-graneleiro
+  - fazenda-fenix
+produtos:
+  - paineis-fechamento
+  - tercas-protendidas
 ---
 
 Todo produtor conhece a cena: chega a colheita, o grão precisa sair da lavoura e o armazém de terceiros dita as regras. Fila, taxa de recepção, desconto de umidade e, no fim, a pressa de vender a safra no pior momento do ano, quando o preço está lá embaixo porque todo mundo colheu ao mesmo tempo.
@@ -32,8 +38,8 @@ Uma fazenda com estrutura de armazenagem instalada vale mais. É um ativo perman
 
 ## A estrutura certa faz toda a diferença
 
-Um armazém graneleiro é um investimento de longo prazo, e ele precisa ser construído para durar décadas sob carga pesada e uso intenso. É aí que entra a experiência de quem já ergueu dezenas de silos, barracões e complexos de armazenagem pelo Mato Grosso.
+Um armazém graneleiro é um investimento de longo prazo, e ele precisa ser construído para durar décadas sob carga pesada e uso intenso. É aí que entra a experiência de quem já ergueu dezenas de [silos, barracões e complexos de armazenagem](/solucoes/agroindustria/) pelo Mato Grosso.
 
-A Construtora Lindóia constrói armazéns graneleiros com estrutura pré-moldada de fabricação própria, do projeto à entrega. Fabricamos as peças nas nossas unidades, transportamos com frota própria e montamos com equipe especializada, garantindo prazo e a solidez que uma obra dessas exige.
+A Construtora Lindóia constrói armazéns graneleiros com [estrutura pré-moldada de fabricação própria](/produtos/), do projeto à entrega. Fabricamos as peças nas nossas unidades, transportamos com frota própria e montamos com equipe especializada, garantindo prazo e a solidez que uma obra dessas exige.
 
 Quer avaliar um armazém graneleiro na sua propriedade? Fale com o nosso comercial e receba um orçamento sem compromisso.
