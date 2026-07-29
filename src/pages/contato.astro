@@ -74,13 +74,13 @@ import { SITE } from '../lib/site';
 
 <style>
   .cards { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; }
-  .card { border: 1px solid #e6e6e6; border-top: 4px solid var(--vermelho); padding: 34px; }
+  .card { border: 1px solid #e6e6e6; border-top: 4px solid var(--vermelho); padding: 34px; min-width: 0; overflow-wrap: anywhere; }
   .card b { text-transform: uppercase; display: block; margin-bottom: 14px; }
   .card p { color: #4a4a4a; margin-bottom: 8px; }
   .card a:hover { color: var(--vermelho); }
   .card .btn { margin-top: 16px; color: #fff; }
   .card .btn:hover { color: #fff; }
-  @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } .card { padding: 26px; } }
 
   .mapa-sec { padding-bottom: 0; }
   .mapa { margin-top: 8px; }
