@@ -3,6 +3,13 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  # GITHUB_REPO e SITE_URL aparecem no site publicado (repo no app.js, URL nas
+  # meta tags), entao o secrets scanning da Netlify precisa ignora-las senao
+  # falha o deploy. As secretas de verdade (DATABASE_URL, OAUTH_*_SECRET) NAO
+  # aparecem no build e seguem sendo escaneadas normalmente.
+  SECRETS_SCAN_OMIT_KEYS = "GITHUB_REPO,SITE_URL"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
