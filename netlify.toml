@@ -14,11 +14,11 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Cabeçalhos de segurança (baixo risco — não quebram o painel).
-# CSP fica de fora por enquanto: precisa de um passe de teste contra o /admin
-# antes de ligar. HSTS SEM includeSubDomains de propósito: o domínio tem
-# subdomínios de e-mail (mail/webmail/smtp/imap/pop) que não devem ser
-# forçados a HTTPS.
+# Cabeçalhos de segurança. CSP mapeada contra o site e o /admin:
+# permite a API do GitHub (edição pelo painel), o iframe do Google Maps
+# (contato) e scripts/estilos inline (sensor de visitas + estilos do Astro).
+# HSTS SEM includeSubDomains de propósito: o domínio tem subdomínios de
+# e-mail (mail/webmail/smtp/imap/pop) que não devem ser forçados a HTTPS.
 [[headers]]
   for = "/*"
   [headers.values]
@@ -27,3 +27,4 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
     Strict-Transport-Security = "max-age=31536000"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.github.com; frame-src https://www.google.com https://maps.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"

@@ -30,7 +30,32 @@ async function garanteTabela() {
     status TEXT DEFAULT 'novo',
     notas TEXT DEFAULT ''
   )`;
+  await db()`CREATE TABLE IF NOT EXISTS lead_rate (
+    id BIGSERIAL PRIMARY KEY,
+    ip TEXT NOT NULL,
+    criado_em TIMESTAMPTZ DEFAULT now()
+  )`;
+  await db()`CREATE INDEX IF NOT EXISTS idx_lead_rate_ip ON lead_rate (ip, criado_em)`;
   tabelaPronta = true;
+}
+
+/* Rate limit por IP: no máximo RATE_MAX envios por janela de 10 min, pra evitar
+   flood do formulário (o honeypot sozinho não basta, já que o código é público). */
+const RATE_MAX = 5;
+function ipDoCliente(req) {
+  return (
+    req.headers.get('x-nf-client-connection-ip') ||
+    (req.headers.get('x-forwarded-for') || '').split(',')[0] ||
+    ''
+  ).trim() || 'desconhecido';
+}
+async function dentroDoLimite(ip) {
+  await db()`DELETE FROM lead_rate WHERE criado_em < now() - interval '1 hour'`;
+  const [{ n }] = await db()`SELECT count(*)::int AS n FROM lead_rate
+    WHERE ip = ${ip} AND criado_em > now() - interval '10 minutes'`;
+  if (n >= RATE_MAX) return false;
+  await db()`INSERT INTO lead_rate (ip) VALUES (${ip})`;
+  return true;
 }
 
 /* Aviso por e-mail quando entra lead. Se o Resend não estiver
@@ -84,6 +109,9 @@ export default async (req) => {
       let b = {};
       try { b = await req.json(); } catch { b = {}; }
       if (corta(b.site, 10)) return json({ ok: true }); // honeypot: finge sucesso
+      if (!(await dentroDoLimite(ipDoCliente(req)))) {
+        return json({ error: 'Muitas tentativas. Aguarde alguns minutos e tente de novo.' }, 429);
+      }
       const nome = corta(b.nome, 120);
       const telefone = corta(b.telefone, 40);
       if (nome.length < 2 || telefone.length < 8) {
