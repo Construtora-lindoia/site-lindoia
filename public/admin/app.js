@@ -298,7 +298,7 @@ function render() {
     <header class="topo">
       <div class="topo-in">
         <img class="logo" src="/img/logo.webp" alt="Construtora Lindóia" />
-        <a class="ver-site" href="${SITE}" target="_blank" rel="noopener">ver o site ↗</a>
+        <a class="ver-site" href="${SITE}/" target="_blank" rel="noopener">ver o site ↗</a>
         <div class="user">
           ${usuario ? `<img src="${esc(usuario.avatar_url)}" alt="" /><span style="font-size:.8rem;font-weight:600">${esc(usuario.login)}</span>` : ''}
           <button id="bt-sair">Sair</button>
