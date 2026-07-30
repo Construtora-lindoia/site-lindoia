@@ -41,8 +41,10 @@ import { SITE } from '../lib/site';
     </div>
   </div>
   <div class="foot-base">
-    <span>Construtora Lindóia Ltda · CNPJ {SITE.cnpj} · Sinop-MT</span>
-    <span class="foot-wp">Site desenvolvido por <span class="wp-credito"><svg class="wp-mark" viewBox="0 0 120 120" fill="none" stroke="currentColor" aria-hidden="true"><path d="M38 44L60 22L82 44"/><path d="M38 76L60 98L82 76"/><path d="M44 38L22 60L44 82"/><path d="M76 38L98 60L76 82"/><path d="M60 46L74 60L60 74L46 60Z" fill="currentColor" stroke="none"/></svg><b>Waypoint&nbsp;Labs</b></span></span>
+    <div class="wrap foot-base-in">
+      <span>Construtora Lindóia Ltda · CNPJ {SITE.cnpj} · Sinop-MT</span>
+      <span class="foot-wp">Site desenvolvido por <span class="wp-credito"><svg class="wp-mark" viewBox="0 0 120 120" fill="none" stroke="currentColor" aria-hidden="true"><path d="M38 44L60 22L82 44"/><path d="M38 76L60 98L82 76"/><path d="M44 38L22 60L44 82"/><path d="M76 38L98 60L76 82"/><path d="M60 46L74 60L60 74L46 60Z" fill="currentColor" stroke="none"/></svg><b>Waypoint&nbsp;Labs</b></span></span>
+    </div>
   </div>
 </footer>
 
@@ -62,12 +64,14 @@ import { SITE } from '../lib/site';
     transition: opacity 0.2s, color 0.2s;
   }
   .foot-link:hover { opacity: 1; color: var(--vermelho); }
-  .foot-base {
+  .foot-base-in {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 6px 16px;
     padding-right: 90px;
+    text-align: left;
   }
   .foot-wp { opacity: 0.8; }
   .wp-credito { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; color: #fff; }
