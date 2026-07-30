@@ -263,12 +263,16 @@ const produtos = (await getCollection('produtos'))
     .stats-grid { grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
     .stat { border-left: none; }
     .stat b { font-size: 1.55rem; }
-    .stats-grid .stat.brasil { grid-column: 1 / -1; }
+    /* mapa vai pro fim da faixa (bloco 2x2 de números primeiro) e ganha tamanho */
+    .stats-grid .stat.brasil { grid-column: 1 / -1; order: 1; margin-top: 6px; }
+    .stats-grid .stat.brasil .mapa-br { height: 3.4rem; }
   }
   @media (max-width: 600px) {
     .hero { min-height: 540px; }
     .hero .wrap { padding-top: 56px; padding-bottom: 64px; }
     .hero .acts .btn { width: 100%; text-align: center; }
+    /* no celular a home mostra só 4 obras; o resto fica em "Ver todas as obras" */
+    .obras-grid .obra-card:nth-child(n + 5) { display: none; }
   }
 
   .sol-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 44px; }
