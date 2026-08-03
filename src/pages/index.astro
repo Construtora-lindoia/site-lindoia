@@ -250,8 +250,9 @@ const produtos = (await getCollection('produtos'))
 
   .stats { background: var(--grafite); color: #fff; padding: 0; }
   .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; padding-top: 44px; padding-bottom: 44px; }
-  .stat { text-align: center; border-left: 1px solid rgba(255,255,255,0.12); }
-  .stat:first-child { border-left: none; }
+  .stat { text-align: center; position: relative; }
+  /* divisoria desenhada no MEIO do gap (12px = metade dos 24px) pra o conteudo ficar centrado entre as barrinhas */
+  .stat:not(:first-child)::before { content: ''; position: absolute; left: -12px; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.12); }
   .stat b { display: block; font-size: 1.7rem; font-weight: 800; }
   .stat b i { font-style: normal; font-variant-numeric: tabular-nums; }
   .stat b span { color: var(--vermelho); }
@@ -261,7 +262,7 @@ const produtos = (await getCollection('produtos'))
   .mapa-br path { fill: none; stroke: var(--vermelho); stroke-width: 300; stroke-linejoin: round; stroke-linecap: round; }
   @media (max-width: 800px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
-    .stat { border-left: none; }
+    .stat:not(:first-child)::before { display: none; }
     .stat b { font-size: 1.55rem; }
     /* mapa vai pro fim da faixa (bloco 2x2 de números primeiro) e ganha tamanho */
     .stats-grid .stat.brasil { grid-column: 1 / -1; order: 1; margin-top: 6px; }
