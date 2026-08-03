@@ -255,9 +255,9 @@ const produtos = (await getCollection('produtos'))
   .stat b { display: block; font-size: 1.7rem; font-weight: 800; }
   .stat b i { font-style: normal; font-variant-numeric: tabular-nums; }
   .stat b span { color: var(--vermelho); }
-  .stat small { color: #bdbdbd; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.1em; }
-  .stat.brasil b { display: flex; align-items: center; justify-content: center; margin-top: 0.5rem; }
-  .mapa-br { display: block; height: 2.4rem; width: auto; }
+  .stat small { color: #bdbdbd; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; display: inline-block; max-width: 88%; }
+  .stat.brasil b { display: flex; align-items: center; justify-content: center; margin-top: 0; min-height: 2.75rem; }
+  .mapa-br { display: block; height: 2.6rem; width: auto; }
   .mapa-br path { fill: none; stroke: var(--vermelho); stroke-width: 300; stroke-linejoin: round; stroke-linecap: round; }
   @media (max-width: 800px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
