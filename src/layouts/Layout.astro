@@ -17,10 +17,10 @@ const { title, description = SITE.descricao } = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.nome}` : `${SITE.nome} | ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
-// Origem pública atual (Netlify). Trocar para o domínio final na virada.
-const OG_ORIGEM = 'https://construtora-lindoia.netlify.app';
+// Origem pública: domínio final (virada de DNS concluída).
+const OG_ORIGEM = 'https://construtoralindoia.com.br';
 const ogUrl = new URL(Astro.url.pathname, OG_ORIGEM);
-const ogImage = new URL('/img/og-card-v2.jpg', OG_ORIGEM);
+const ogImage = new URL('/img/og-card-v3.jpg', OG_ORIGEM);
 ---
 
 <!doctype html>
