@@ -19,6 +19,16 @@ const produtos = (await getCollection('produtos'))
 ---
 
 <Layout>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'Quanto custa um galpão pré-moldado?', acceptedAnswer: { '@type': 'Answer', text: 'O valor varia conforme o vão, o pé-direito, o tipo de fechamento e o acabamento. A Construtora Lindóia faz orçamento sob medida em Sinop-MT e região.' } },
+      { '@type': 'Question', name: 'A Construtora Lindóia fabrica os pré-moldados?', acceptedAnswer: { '@type': 'Answer', text: 'Sim. Temos fábrica própria com duas unidades somando 50.000 m² e fazemos a obra turnkey: fabricamos, transportamos e montamos com equipe e frota próprias.' } },
+      { '@type': 'Question', name: 'A Lindóia atende fora de Sinop?', acceptedAnswer: { '@type': 'Answer', text: 'Sim, atendemos todo o norte de Mato Grosso e região — já construímos em 39 cidades.' } },
+      { '@type': 'Question', name: 'A Lindóia constrói armazém graneleiro?', acceptedAnswer: { '@type': 'Answer', text: 'Sim. Construímos armazéns graneleiros, silos, barracões e pavilhões para o agronegócio, do projeto à entrega.' } },
+    ],
+  })} />
   <section class="hero" id="topo">
     <video autoplay muted loop playsinline preload="auto" poster="/img/obras/machadao-primavera-1.webp">
       <source src="/video/hero.mp4" type="video/mp4" />

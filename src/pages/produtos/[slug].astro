@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import FormOrcamento from '../../components/FormOrcamento.astro';
+import { SITE } from '../../lib/site';
 
 export async function getStaticPaths() {
   const produtos = await getCollection('produtos');
@@ -14,6 +15,17 @@ const fotos = produto.data.fotos ?? [];
 ---
 
 <Layout title={produto.data.nome} description={produto.data.resumo}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: produto.data.nome,
+    description: produto.data.resumo,
+    image: new URL(produto.data.imagem, 'https://construtoralindoia.com.br').href,
+    brand: { '@type': 'Brand', name: SITE.nome },
+    manufacturer: { '@type': 'Organization', name: SITE.nome },
+    category: 'Pré-moldado de concreto',
+    areaServed: 'Mato Grosso',
+  })} />
   <div class="page-head">
     <div class="wrap">
       <div class="eyebrow">Produtos · Fabricação própria</div>

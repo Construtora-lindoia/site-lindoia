@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { title, description = SITE.descricao } = Astro.props;
-const pageTitle = title ? `${title} · ${SITE.nome}` : `${SITE.nome} | ${SITE.tagline}`;
+const pageTitle = title ? `${title} · ${SITE.nome}` : `${SITE.nome} — Galpões, Armazéns e Pré-Moldados em Sinop-MT`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 // Origem pública: domínio final (virada de DNS concluída).
