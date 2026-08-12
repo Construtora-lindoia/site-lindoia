@@ -48,6 +48,14 @@ const ogImage = new URL('/img/og-card-v3.jpg', OG_ORIGEM);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#373737" />
+    <!-- Google Analytics 4 -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-MCBD1TZV5T"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-MCBD1TZV5T');
+    </script>
     <script
       type="application/ld+json"
       set:html={JSON.stringify({
@@ -148,6 +156,17 @@ const ogImage = new URL('/img/og-card-v3.jpg', OG_ORIGEM);
           el.style.transitionDelay = Math.min(irmaos * 70, 350) + 'ms';
           io.observe(el);
         });
+      })();
+
+      // eventos GA4: clique em WhatsApp e telefone (delegação — pega todos os botões, atuais e futuros)
+      (function () {
+        function ev(nome, params) { try { if (window.gtag) window.gtag('event', nome, params); } catch (e) {} }
+        document.addEventListener('click', function (e) {
+          var a = e.target && e.target.closest ? e.target.closest('a') : null;
+          if (!a || !a.href) return;
+          if (/wa\.me|whatsapp/i.test(a.href)) ev('clique_whatsapp', { local: (a.getAttribute('aria-label') || a.className || 'link').slice(0, 60) });
+          else if (/^tel:/i.test(a.href)) ev('clique_telefone', {});
+        }, true);
       })();
     </script>
   </body>

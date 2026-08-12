@@ -122,6 +122,7 @@ const waHref = assunto
       if (!r.ok) throw new Error();
       form.hidden = true;
       (document.getElementById('fo-ok') as HTMLElement).hidden = false;
+      try { (window as any).gtag && (window as any).gtag('event', 'envio_formulario', { metodo: 'formulario', tipo_obra: (dados.segmento as string) || '' }); } catch {}
     } catch {
       btn.disabled = false;
       btn.textContent = 'Pedir orçamento';
