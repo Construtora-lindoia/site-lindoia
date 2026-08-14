@@ -59,7 +59,7 @@ Por isso o planejamento conta de trás para frente: define-se a data em que o ar
 
 Há 29 anos, desde 1997, a Construtora Lindóia ergue [armazéns, silos e complexos de armazenagem](/solucoes/agroindustria/) por todo o Mato Grosso. O nosso diferencial pesa direto no prazo e na solidez: **fábrica própria de pré-moldados**. Fabricamos os pilares, vigas, terças e painéis nas nossas unidades em Sinop (50.000 m²), transportamos com frota própria de caminhões munck e montamos com equipe especializada, do projeto à entrega.
 
-Foi assim em obras como o [Armazém graneleiro](/obras/armazem-graneleiro/) e a [Fazenda Fênix](/obras/fazenda-fenix/).
+Foi assim em obras como o [Armazém graneleiro](/obras/armazem-graneleiro/), a [Fazenda Fênix](/obras/fazenda-fenix/) e o armazém [Poltronieri](/obras/poltronieri/).
 
 Está planejando um armazém para a próxima safra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361) e receba um orçamento. Quanto antes começar, mais tranquilo você entrega.
 </content>
