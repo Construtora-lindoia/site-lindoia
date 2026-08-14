@@ -15,7 +15,7 @@ produtos:
   - paineis-fechamento
 ---
 
-Quem vai construir quer saber uma coisa antes de tudo: quanto custa o galpão. A resposta honesta é que não existe um preço único por metro quadrado — ele varia conforme o tamanho, o pé-direito, o tipo de piso e a finalidade da obra. Mas dá para entender exatamente o que forma esse valor e chegar a um número confiável antes de fechar o projeto.
+Quem vai construir quer saber uma coisa antes de tudo: quanto custa o galpão. A resposta honesta é que não existe um preço único por metro quadrado. Ele varia conforme o tamanho, o pé-direito, o tipo de piso e a finalidade da obra. Mas dá para entender exatamente o que forma esse valor e chegar a um número confiável antes de fechar o projeto.
 
 Este guia mostra o que faz o preço subir ou descer, como o pré-moldado se compara à alvenaria e como pedir um orçamento que reflita o custo real da sua obra.
 
@@ -37,7 +37,7 @@ Por isso, desconfie de quem dá um preço fechado sem conhecer o projeto. O núm
 
 Boa parte da diferença entre um orçamento e outro está no que vem incluído. Existem dois modelos principais:
 
-- **Obra estrutural (pré-moldado montado):** a construtora entrega a estrutura de concreto — pilares, vigas, terças e fechamentos — montada no local. É a base sobre a qual o restante é executado. Custa menos, mas exige que você contrate à parte cobertura, piso, instalações e acabamentos.
+- **Obra estrutural (pré-moldado montado):** a construtora entrega a estrutura de concreto (pilares, vigas, terças e fechamentos) montada no local. É a base sobre a qual o restante é executado. Custa menos, mas exige que você contrate à parte cobertura, piso, instalações e acabamentos.
 - **Obra [turnkey](/solucoes/turnkey/) (chave na mão):** a construtora entrega o galpão pronto para uso, incluindo estrutura, cobertura, piso, fechamentos, instalações e acabamentos. O valor é maior, mas o cliente recebe a obra funcionando, sem administrar vários fornecedores.
 
 Comparar orçamentos só faz sentido quando os dois cobrem o mesmo escopo. Um preço por m² muito abaixo dos outros quase sempre esconde algo que ficou de fora.
