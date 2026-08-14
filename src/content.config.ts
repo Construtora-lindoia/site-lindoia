@@ -37,6 +37,7 @@ const blog = defineCollection({
     rascunho: z.boolean().default(false),
     obras: z.array(z.string()).default([]),
     produtos: z.array(z.string()).default([]),
+    faq: z.array(z.object({ pergunta: z.string(), resposta: z.string() })).default([]),
   }),
 });
 
