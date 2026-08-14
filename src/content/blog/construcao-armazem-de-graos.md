@@ -83,5 +83,5 @@ Há 29 anos, desde 1997, a Construtora Lindóia ergue [armazéns, silos e comple
 
 Foi assim em obras como o [Armazém graneleiro](/obras/armazem-graneleiro/), a [Fazenda Fênix](/obras/fazenda-fenix/) e o armazém [Poltronieri](/obras/poltronieri/).
 
-Está planejando um armazém para a próxima safra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361) e receba um orçamento. Quanto antes começar, mais tranquilo você entrega.
+Está planejando um armazém para a próxima safra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361?text=Ol%C3%A1%21%20Vim%20pelo%20blog%20da%20Construtora%20Lind%C3%B3ia%20e%20gostaria%20de%20um%20or%C3%A7amento%20de%20armaz%C3%A9m%20de%20gr%C3%A3os.) e receba um orçamento. Quanto antes começar, mais tranquilo você entrega.
 </content>
