@@ -123,7 +123,7 @@ const apagar = (path, sha, msg) =>
 /* ============ frontmatter ============ */
 function parseMd(texto) {
   const m = texto.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  if (!m) return { data: {}, body: texto.trim() };
+  if (!m) return { data: {}, body: texto.trim(), raw: '' };
   const data = {};
   let listaAtual = null;
   for (const linha of m[1].split(/\r?\n/)) {
@@ -143,7 +143,7 @@ function parseMd(texto) {
       listaAtual = null;
     }
   }
-  return { data, body: m[2].trim() };
+  return { data, body: m[2].trim(), raw: m[1] };
 }
 function limpaVal(v) {
   v = v.trim();
@@ -259,8 +259,8 @@ async function carregarTudo() {
         .filter((a) => a.name.endsWith('.md'))
         .map(async (a) => {
           const f = await lerArq(a.path);
-          const { data, body } = parseMd(fromB64(f.content));
-          return { tipo, arquivo: a.path, sha: f.sha, slug: a.name.replace(/\.md$/, ''), data, body };
+          const { data, body, raw } = parseMd(fromB64(f.content));
+          return { tipo, arquivo: a.path, sha: f.sha, slug: a.name.replace(/\.md$/, ''), data, body, raw };
         })
     );
   const [obras, produtos, posts] = await Promise.all([
@@ -607,7 +607,22 @@ async function excluir(veu) {
 }
 
 /* ============ blog ============ */
-function mdPost(d, body) {
+// Campos do post que o painel edita. Qualquer outro campo do frontmatter
+// (obras, produtos, faq, etc.) é preservado verbatim ao salvar — senão o
+// painel apagaria silenciosamente o que ele não conhece.
+const CAMPOS_POST = ['titulo', 'descricao', 'data', 'capa', 'rascunho'];
+function extrasFrontmatter(raw, gerenciados) {
+  if (!raw) return '';
+  const manter = [];
+  let mantendo = false;
+  for (const linha of raw.split(/\r?\n/)) {
+    const topo = linha.match(/^([\w-]+):/);
+    if (topo) mantendo = !gerenciados.includes(topo[1]);
+    if (mantendo && linha.trim() !== '') manter.push(linha);
+  }
+  return manter.join('\n');
+}
+function mdPost(d, body, extras) {
   const linhas = [
     '---',
     'titulo: ' + yamlStr(d.titulo),
@@ -615,7 +630,9 @@ function mdPost(d, body) {
     'data: ' + d.data,
   ];
   if (d.capa) linhas.push('capa: ' + d.capa);
-  linhas.push('rascunho: ' + !!d.rascunho, '---', '', body || '');
+  linhas.push('rascunho: ' + !!d.rascunho);
+  if (extras) linhas.push(extras);
+  linhas.push('---', '', body || '');
   return linhas.join('\n');
 }
 
@@ -700,7 +717,8 @@ async function salvarPost(veu) {
         capa: paths[0] || '',
         rascunho: $('#p-rascunho').checked,
       },
-      v('#p-body')
+      v('#p-body'),
+      editando ? extrasFrontmatter(editando.raw, CAMPOS_POST) : ''
     );
     const arquivo = editando ? editando.arquivo : `${DIR_BLOG}/${slug}.md`;
     await gravar(arquivo, toB64(conteudo), `conteúdo: ${editando ? 'atualiza' : 'cria'} post "${v('#p-titulo')}"`, editando?.sha);
