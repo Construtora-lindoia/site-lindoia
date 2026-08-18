@@ -4,26 +4,6 @@ descricao: "Como construir um armazém de grãos: as etapas da obra, o prazo den
 data: 2026-08-14
 capa: /img/obras/poltronieri-1.webp
 rascunho: false
-obras:
-  - armazem-graneleiro
-  - fazenda-fenix
-  - poltronieri
-produtos:
-  - canaleta-aeracao
-  - canaleta-l-armazem
-  - paineis-fechamento
-  - tercas-protendidas
-faq:
-  - pergunta: "Quanto tempo leva para construir um armazém de grãos?"
-    resposta: "Depende do porte e do tipo de armazenagem, mas a maior parte da obra roda em poucos meses. O ponto crítico não é só o prazo, e sim entregar antes da colheita: por isso o planejamento é feito de trás para frente, a partir da data em que o armazém precisa receber grão. Estrutura pré-moldada ajuda a encurtar e a dar previsibilidade ao prazo."
-  - pergunta: "Qual a diferença entre armazém graneleiro e silo?"
-    resposta: "O graneleiro é um barracão horizontal onde o grão fica a granel sobre o piso, com aeração; costuma ter custo por tonelada menor e boa flexibilidade. O silo é uma estrutura vertical, que ocupa menos área e facilita a automação. Muitas propriedades combinam os dois, conforme o volume, o tipo de grão e o espaço disponível."
-  - pergunta: "Que capacidade de armazenagem eu devo escolher?"
-    resposta: "O ideal é dimensionar pela produção da safra mais uma folga para o crescimento, considerando o fluxo de recepção e expedição. Construir apertado obriga a reformar em poucas safras, e construir grande demais imobiliza capital. Um bom projeto acerta esse ponto olhando a realidade da propriedade."
-  - pergunta: "Preciso de projeto e licenciamento para construir um armazém?"
-    resposta: "Sim. Além do projeto estrutural (fundação, estrutura e aeração), a obra normalmente exige regularização e licenças conforme o município e o órgão ambiental. Uma construtora experiente orienta o produtor sobre esses passos desde o início."
-  - pergunta: "Quanto custa construir um armazém de grãos?"
-    resposta: "Não existe um valor único: o custo depende da capacidade, do tipo de armazenagem, do solo, da cobertura e do sistema de aeração. A forma certa de saber é com um projeto em mãos e um orçamento. Quem tem fábrica própria de pré-moldados costuma oferecer melhor custo, porque não há intermediário entre a produção e a obra."
 ---
 
 Construir um armazém de grãos na propriedade é uma decisão que se paga safra após safra: corta frete, dá poder de barganha e reduz perdas. Mas o resultado depende de dois pontos: **fazer a obra na ordem certa** e **entregá-la antes da colheita**. Neste guia a gente mostra as etapas de uma obra de armazenagem, por que o prazo gira em torno da janela de safra e os cuidados que fazem a estrutura durar décadas.
