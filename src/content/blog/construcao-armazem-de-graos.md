@@ -3,7 +3,7 @@ titulo: "Construção de armazém de grãos: prazo, etapas e cuidados"
 descricao: "Como construir um armazém de grãos: as etapas da obra, o prazo dentro da janela de safra e os cuidados que evitam prejuízo. Guia da Construtora Lindóia."
 data: 2026-08-14
 capa: /img/obras/poltronieri-1.webp
-rascunho: true
+rascunho: false
 obras:
   - armazem-graneleiro
   - fazenda-fenix
