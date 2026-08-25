@@ -1,7 +1,7 @@
 ---
 titulo: "O que é laje alveolar protendida e quando usar"
 descricao: "O que é laje alveolar protendida, como funciona a protensão, as vantagens (grandes vãos, montagem rápida, sem escoramento) e quando usar na sua obra."
-data: 2026-08-21
+data: 2026-08-25
 capa: /img/obras/multibar-1.webp
 rascunho: true
 obras:
@@ -13,6 +13,17 @@ produtos:
   - vigas
   - pilares
   - tercas-protendidas
+faq:
+  - pergunta: "O que é laje alveolar protendida?"
+    resposta: "É uma laje de concreto pré-fabricada com vazios contínuos ao longo do comprimento (os alvéolos) e cabos de aço protendidos por dentro. Essa combinação dá alta capacidade de carga com peso reduzido, o que permite vencer grandes vãos sem escoramento e montar o pavimento em poucos dias."
+  - pergunta: "A laje alveolar precisa de escoramento?"
+    resposta: "Não. Ela chega pronta da fábrica, é içada e apoiada sobre as vigas, e já entra em trabalho. Sem escoramento e sem tempo de cura no local, o pavimento de baixo fica livre e a obra anda em vários níveis ao mesmo tempo."
+  - pergunta: "Que vão livre a laje alveolar consegue vencer?"
+    resposta: "Bem mais que uma laje comum. O vão exato depende da altura da peça e da carga prevista, e é sempre definido no projeto estrutural: quanto maior o vão e a carga, mais alta a laje. Por isso o dimensionamento correto faz parte do serviço."
+  - pergunta: "Onde a laje alveolar é mais usada?"
+    resposta: "Em pavimentos de obras comerciais e industriais: lojas e supermercados de mais de um piso, galpões com mezanino, edifícios comerciais, estacionamentos e pavilhões. Também em coberturas planas. Sempre que o projeto pede piso resistente, vão amplo e prazo curto."
+  - pergunta: "Laje alveolar, maciça ou treliçada: qual escolher?"
+    resposta: "A maciça e a treliçada ainda fazem sentido em obras menores e vãos curtos. Quando o vão cresce e o prazo aperta, elas exigem mais escoramento, mão de obra e tempo de cura. A alveolar troca isso por peça pronta e montagem rápida, por isso domina as obras de médio e grande porte."
 ---
 
 A laje alveolar protendida é uma laje de concreto pré-fabricada, com furos contínuos ao longo do comprimento (os alvéolos) e cabos de aço protendidos por dentro. Essa combinação dá à peça uma **alta capacidade de carga com peso reduzido**, capaz de vencer grandes vãos livres sem escoramento e ser montada em poucos dias.
@@ -58,5 +69,4 @@ Laje alveolar é um produto de engenharia: a protensão e o controle de fabrica�
 
 Há 29 anos, a Construtora Lindóia produz [lajes alveolares protendidas](/produtos/laje-alveolar/) na própria fábrica de pré-moldados em Sinop, junto com pilares, vigas e terças, e entrega a obra completa, do projeto à montagem, com [estrutura pré-moldada de fabricação própria](/solucoes/). Foi assim em obras como o [Machadão de Primavera](/obras/machadao-primavera/) e a [Multibar](/obras/multibar/).
 
-Vai ter pavimento na sua obra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361) e veja se a laje alveolar é a solução. A gente dimensiona junto com você.
-</content>
+Vai ter pavimento na sua obra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361?text=Ol%C3%A1%21%20Vim%20pelo%20blog%20da%20Construtora%20Lind%C3%B3ia%20e%20gostaria%20de%20um%20or%C3%A7amento%20de%20laje%20alveolar.) e veja se a laje alveolar é a solução. A gente dimensiona junto com você.
