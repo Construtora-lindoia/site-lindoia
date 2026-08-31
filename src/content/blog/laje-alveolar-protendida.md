@@ -3,7 +3,7 @@ titulo: "O que é laje alveolar protendida e quando usar"
 descricao: "O que é laje alveolar protendida, como funciona a protensão, as vantagens (grandes vãos, montagem rápida, sem escoramento) e quando usar na sua obra."
 data: 2026-08-25
 capa: /img/obras/multibar-1.webp
-rascunho: true
+rascunho: false
 obras:
   - machadao-primavera
   - multibar
