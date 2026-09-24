@@ -1,9 +1,9 @@
 ---
 titulo: "Pré-moldado ou estrutura metálica: qual vale mais a pena?"
 descricao: "Pré-moldado de concreto ou estrutura metálica para o seu galpão? Compare custo, durabilidade, prazo e manutenção e veja quando usar cada um."
-data: 2026-08-07
+data: 2026-09-24
 capa: /img/obras/multibar-1.webp
-rascunho: true
+rascunho: false
 obras:
   - machadao-primavera
   - machado-aeroporto
@@ -13,6 +13,17 @@ produtos:
   - vigas
   - laje-alveolar
   - tercas-protendidas
+faq:
+  - pergunta: "Pré-moldado ou estrutura metálica: qual é mais barato?"
+    resposta: "Depende do que se compara. O aço tem preço mais ligado ao câmbio e ao mercado, o que deixa o orçamento mais instável. No custo total, somando manutenção e durabilidade ao longo dos anos, o pré-moldado de concreto costuma sair mais em conta na maioria dos galpões e armazéns."
+  - pergunta: "Qual dura mais, concreto pré-moldado ou aço?"
+    resposta: "O concreto leva vantagem em durabilidade, principalmente em ambientes agrícolas e industriais. Ele não enferruja, resiste ao fogo e aguenta bem o uso pesado do dia a dia. O aço exige tratamento anticorrosão para durar nas mesmas condições."
+  - pergunta: "Qual precisa de menos manutenção?"
+    resposta: "O pré-moldado de concreto. Depois de montado, ele é praticamente livre de manutenção estrutural. A estrutura metálica precisa de inspeção da pintura, tratamento de corrosão e repinturas periódicas ao longo dos anos."
+  - pergunta: "Estrutura metálica é mais rápida que pré-moldado?"
+    resposta: "As duas são rápidas quando bem executadas, porque ambas são pré-fabricadas fora do canteiro. No pré-moldado, as peças são produzidas na fábrica enquanto a fundação é preparada na obra, o que dá um prazo ágil e previsível."
+  - pergunta: "Quando vale a pena usar estrutura metálica?"
+    resposta: "A metálica costuma ser interessante em vãos livres muito grandes, coberturas leves e obras onde o peso reduzido da estrutura é decisivo. Para a maioria dos galpões, barracões e armazéns, o pré-moldado entrega mais solidez e menor custo total."
 ---
 
 Na hora de fechar um galpão, um pavilhão ou um armazém, surge quase sempre a mesma dúvida: estrutura pré-moldada de concreto ou estrutura metálica? As duas funcionam, mas cada uma se encaixa melhor em situações diferentes. Em resumo: **o pré-moldado costuma vencer em custo total, durabilidade e manutenção**, enquanto a estrutura metálica pode ser vantajosa em vãos muito grandes e obras que exigem leveza.
@@ -60,5 +71,4 @@ Há 29 anos, desde 1997, a Construtora Lindóia constrói com [estrutura pré-mo
 
 Esse controle total, do projeto à entrega, garante o prazo e a qualidade que você vê em obras como o [Machadão de Primavera](/obras/machadao-primavera/) e o [Aeroporto Machado](/obras/machado-aeroporto/).
 
-Está decidindo a estrutura da sua obra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361) e receba uma orientação técnica junto com o orçamento.
-</content>
+Está decidindo a estrutura da sua obra? [Fale com o nosso comercial no WhatsApp](https://wa.me/5566999867361?text=Ol%C3%A1%21%20Vim%20pelo%20blog%20da%20Construtora%20Lind%C3%B3ia%20e%20gostaria%20de%20uma%20orienta%C3%A7%C3%A3o%20sobre%20a%20estrutura%20da%20minha%20obra.) e receba uma orientação técnica junto com o orçamento.
