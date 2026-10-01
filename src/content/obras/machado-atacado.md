@@ -6,8 +6,7 @@ cidade: Sinop-MT
 capa: /img/obras/machado-atacado-1.webp
 fotos:
   - /img/obras/machado-atacado-1.webp
-  - /img/obras/machado-atacado-2.webp
-ordem: 3
+ordem: 4
 ---
 
-Loja do Machado Atacado em Sinop, construída em estrutura pré-moldada de concreto. Grandes vãos livres para a área de vendas e o estoque, com o prazo de obra sob controle do projeto à entrega.
+Loja do Machado Atacado em Sinop, construída em estrutura pré-moldada de concreto, com grandes vãos livres para a área de vendas e o estoque.
