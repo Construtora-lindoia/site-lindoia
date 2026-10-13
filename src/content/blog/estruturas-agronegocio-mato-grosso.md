@@ -1,9 +1,9 @@
 ---
 titulo: "Estruturas pré-moldadas para o agronegócio em Mato Grosso"
 descricao: "Armazém, silo e barracão prontos antes da safra: veja as estruturas pré-moldadas que o agronegócio de Mato Grosso constrói e por que o concreto virou padrão."
-data: 2026-10-20
+data: 2026-10-13
 capa: /img/obras/alceu-feuldmann-1.webp
-rascunho: true
+rascunho: false
 obras:
   - agropecuaria-crestani
   - terra-way
