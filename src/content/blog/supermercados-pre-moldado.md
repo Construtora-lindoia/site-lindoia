@@ -1,9 +1,9 @@
 ---
 titulo: "Por que os supermercados estão construindo em pré-moldado"
 descricao: "Obra rápida, grandes vãos livres e piso que aguenta o movimento: veja por que as redes de supermercado escolhem o pré-moldado para abrir e expandir lojas."
-data: 2026-10-06
+data: 2026-10-13
 capa: /img/obras/delmoro-guaranta-1.webp
-rascunho: true
+rascunho: false
 obras:
   - delmoro-guaranta
   - machado-atacado
