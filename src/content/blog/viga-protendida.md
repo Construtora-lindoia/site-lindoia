@@ -1,9 +1,9 @@
 ---
 titulo: "O que é viga protendida e quando usar"
 descricao: "Viga protendida tipo I vence grandes vãos com menos concreto. Veja o que é, onde se usa (laje, cobertura, moega de grãos, ponte rolante) e os tamanhos que a Lindóia fabrica."
-data: 2026-10-20
+data: 2026-10-23
 capa: /img/obras/bertuol.webp
-rascunho: true
+rascunho: false
 obras:
   - inpasa
   - terra-way
