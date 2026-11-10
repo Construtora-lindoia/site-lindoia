@@ -100,6 +100,44 @@ async function notificaLead(lead) {
   });
 }
 
+/* Aviso instantâneo no Telegram quando entra lead. Criar o bot no @BotFather,
+   pegar o chat_id (DM do Jordano ou um grupo) e definir TELEGRAM_BOT_TOKEN e
+   TELEGRAM_CHAT_ID nas variáveis da Netlify (vários destinos = separar por
+   vírgula). Se não estiver configurado, apenas não envia; o lead é salvo
+   do mesmo jeito. */
+async function notificaTelegram(lead) {
+  const token = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
+  const chatsRaw = (process.env.TELEGRAM_CHAT_ID || '').trim();
+  if (!token || !chatsRaw) return;
+  const chats = chatsRaw.split(',').map((s) => s.trim()).filter(Boolean);
+  const siteUrl = (process.env.SITE_URL || 'https://construtoralindoia.com.br').trim().replace(/\/$/, '');
+  const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const linha = (rotulo, valor) => (valor ? `${rotulo} ${esc(valor)}\n` : '');
+  const zap = String(lead.telefone || '').replace(/\D/g, '');
+  const waNum = zap ? (zap.startsWith('55') ? zap : '55' + zap) : '';
+  const texto =
+    '🔔 <b>Novo lead no site</b>\n\n' +
+    linha('👤 <b>Nome:</b>', lead.nome) +
+    linha('📱 <b>WhatsApp:</b>', lead.telefone) +
+    linha('✉️ <b>E-mail:</b>', lead.email) +
+    linha('📍 <b>Cidade:</b>', lead.cidade) +
+    linha('🏗️ <b>Tipo de obra:</b>', SEG_ROTULOS[lead.segmento] || lead.segmento) +
+    linha('💬 <b>Mensagem:</b>', lead.mensagem) +
+    linha('🌐 <b>Origem:</b>', lead.utm || lead.origem) +
+    '\n' +
+    (waNum ? `➡️ <a href="https://wa.me/${waNum}">Responder no WhatsApp</a>\n` : '') +
+    `📊 <a href="${siteUrl}/admin">Abrir o funil de leads</a>`;
+  await Promise.all(
+    chats.map((chat_id) =>
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ chat_id, text: texto, parse_mode: 'HTML', disable_web_page_preview: true }),
+      })
+    )
+  );
+}
+
 export default async (req) => {
   try {
     await garanteTabela();
@@ -122,9 +160,8 @@ export default async (req) => {
                 ${corta(b.segmento, 40)}, ${corta(b.mensagem, 2000)},
                 ${corta(b.origem, 40) || 'site'}, ${corta(b.utm, 500)})
         RETURNING *`;
-      try {
-        await notificaLead(lead);
-      } catch {} // e-mail nunca derruba o cadastro do lead
+      // notificações nunca derrubam o cadastro do lead
+      await Promise.allSettled([notificaLead(lead), notificaTelegram(lead)]);
       return json({ ok: true, id: lead.id }, 201);
     }
 
