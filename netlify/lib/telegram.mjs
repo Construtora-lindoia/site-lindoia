@@ -107,8 +107,33 @@ function botoesLead(lead) {
   ]);
   rows.push([
     { text: '↩️ Reabrir', callback_data: `s:${lead.id}:novo` },
-    { text: '📊 Funil', url: `${siteUrl()}/admin` },
+    { text: '📋 Ver todos', callback_data: 'ls' },
   ]);
+  return { inline_keyboard: rows };
+}
+
+// Cabeçalho da lista do /leads: resumo do funil por status.
+function funilTexto(mapa, total) {
+  let t = '📊 <b>Funil de leads</b>\n';
+  for (const st of STATUS_VALIDOS) {
+    const n = mapa[st] || 0;
+    if (n) t += `${STATUS_INFO[st].emoji} ${STATUS_INFO[st].rotulo}: <b>${n}</b>\n`;
+  }
+  t += `\nSão ${total} no total. Toque num lead pra abrir e classificar 👇`;
+  return t;
+}
+
+// Lista enxuta: um botão por lead (status + nome + telefone). O clique manda
+// "v:<id>", que o webhook abre como cartão. Último botão recarrega a lista.
+function listaBotoes(leads) {
+  const rows = leads.map((l) => {
+    const si = STATUS_INFO[l.status] || STATUS_INFO.novo;
+    let nome = String(l.nome || 'Sem nome').trim();
+    if (nome.length > 24) nome = nome.slice(0, 23) + '…';
+    const tel = String(l.telefone || '').trim();
+    return [{ text: `${si.emoji} ${nome}${tel ? ' · ' + tel : ''}`, callback_data: `v:${l.id}` }];
+  });
+  rows.push([{ text: '🔄 Atualizar', callback_data: 'ls' }]);
   return { inline_keyboard: rows };
 }
 
@@ -144,5 +169,7 @@ export {
   siteUrl,
   leadTexto,
   botoesLead,
+  funilTexto,
+  listaBotoes,
   notificaTelegram,
 };

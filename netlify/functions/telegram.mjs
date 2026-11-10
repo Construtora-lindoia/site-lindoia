@@ -6,6 +6,8 @@ import {
   tg,
   leadTexto,
   botoesLead,
+  funilTexto,
+  listaBotoes,
 } from '../lib/telegram.mjs';
 
 export const config = { path: '/api/telegram' };
@@ -18,39 +20,26 @@ function autorizadoChat(id) {
   return !lista.length || lista.includes(String(id));
 }
 
-// Responde ao /leads: resumo do funil + os 10 leads mais recentes, cada um
-// com os botões de classificação.
-async function enviaFunil(chatId) {
+// Monta a lista enxuta do /leads: resumo do funil + um botão por lead.
+async function montaLista() {
   const contagem = await db()`SELECT status, count(*)::int AS n FROM leads GROUP BY status`;
   const mapa = Object.fromEntries(contagem.map((r) => [r.status, r.n]));
   const total = contagem.reduce((s, r) => s + r.n, 0);
-
   if (!total) {
-    await tg('sendMessage', {
-      chat_id: chatId,
+    return {
       text: 'Nenhum lead cadastrado ainda. Quando o primeiro chegar pelo site, ele aparece aqui na hora.',
-    });
-    return;
+    };
   }
+  const leads = await db()`SELECT id, nome, telefone, status FROM leads
+    ORDER BY criado_em DESC LIMIT 10`;
+  return { text: funilTexto(mapa, total), reply_markup: listaBotoes(leads) };
+}
 
-  let resumo = '📊 <b>Funil de leads</b>\n';
-  for (const st of STATUS_VALIDOS) {
-    const n = mapa[st] || 0;
-    if (n) resumo += `${STATUS_INFO[st].emoji} ${STATUS_INFO[st].rotulo}: <b>${n}</b>\n`;
-  }
-  resumo += `\nMostrando os ${Math.min(total, 10)} mais recentes 👇`;
-  await tg('sendMessage', { chat_id: chatId, text: resumo, parse_mode: 'HTML' });
-
-  const leads = await db()`SELECT * FROM leads ORDER BY criado_em DESC LIMIT 10`;
-  for (const lead of leads) {
-    await tg('sendMessage', {
-      chat_id: chatId,
-      text: leadTexto(lead),
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-      reply_markup: botoesLead(lead),
-    });
-  }
+// Monta o cartão de um lead (texto + botões de classificação).
+async function montaCartao(id) {
+  const [lead] = await db()`SELECT * FROM leads WHERE id = ${id}`;
+  if (!lead) return null;
+  return { text: leadTexto(lead), reply_markup: botoesLead(lead) };
 }
 
 export default async (req) => {
@@ -71,14 +60,44 @@ export default async (req) => {
   }
 
   try {
-    // Clique num botão do cartão -> muda o status do lead.
+    // Clique num botão: abrir lead, voltar pra lista ou mudar o status.
     if (upd.callback_query) {
       const cq = upd.callback_query;
       if (!autorizadoChat(cq.from?.id)) {
         await tg('answerCallbackQuery', { callback_query_id: cq.id, text: 'Sem permissão.' });
         return new Response('ok');
       }
-      const m = /^s:(\d+):(\w+)$/.exec(cq.data || '');
+      const data = cq.data || '';
+      const alvo = {
+        chat_id: cq.message?.chat?.id,
+        message_id: cq.message?.message_id,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      };
+
+      // Voltar / atualizar a lista.
+      if (data === 'ls') {
+        const lista = await montaLista();
+        await tg('answerCallbackQuery', { callback_query_id: cq.id });
+        await tg('editMessageText', { ...alvo, text: lista.text, reply_markup: lista.reply_markup });
+        return new Response('ok');
+      }
+
+      // Abrir o cartão de um lead.
+      let m = /^v:(\d+)$/.exec(data);
+      if (m) {
+        const cartao = await montaCartao(Number(m[1]));
+        if (!cartao) {
+          await tg('answerCallbackQuery', { callback_query_id: cq.id, text: 'Lead não encontrado.' });
+          return new Response('ok');
+        }
+        await tg('answerCallbackQuery', { callback_query_id: cq.id });
+        await tg('editMessageText', { ...alvo, text: cartao.text, reply_markup: cartao.reply_markup });
+        return new Response('ok');
+      }
+
+      // Mudar o status de um lead.
+      m = /^s:(\d+):(\w+)$/.exec(data);
       if (m && STATUS_VALIDOS.includes(m[2])) {
         const id = Number(m[1]);
         const status = m[2];
@@ -90,19 +109,17 @@ export default async (req) => {
             text: `${STATUS_INFO[status].emoji} ${STATUS_INFO[status].rotulo}`,
           });
           await tg('editMessageText', {
-            chat_id: cq.message.chat.id,
-            message_id: cq.message.message_id,
+            ...alvo,
             text: leadTexto(lead),
-            parse_mode: 'HTML',
-            disable_web_page_preview: true,
             reply_markup: botoesLead(lead),
           });
         } else {
           await tg('answerCallbackQuery', { callback_query_id: cq.id, text: 'Lead não encontrado.' });
         }
-      } else {
-        await tg('answerCallbackQuery', { callback_query_id: cq.id });
+        return new Response('ok');
       }
+
+      await tg('answerCallbackQuery', { callback_query_id: cq.id });
       return new Response('ok');
     }
 
@@ -119,7 +136,14 @@ export default async (req) => {
       }
       const texto = (msg.text || '').trim();
       if (/^\/leads\b/i.test(texto)) {
-        await enviaFunil(chatId);
+        const lista = await montaLista();
+        await tg('sendMessage', {
+          chat_id: chatId,
+          text: lista.text,
+          parse_mode: 'HTML',
+          disable_web_page_preview: true,
+          reply_markup: lista.reply_markup,
+        });
       } else if (/^\/(start|help|ajuda)\b/i.test(texto)) {
         await tg('sendMessage', {
           chat_id: chatId,
@@ -128,7 +152,7 @@ export default async (req) => {
             '🤖 <b>Bot de leads da Construtora Lindóia</b>\n\n' +
             'Cada novo contato do site cai aqui na hora, já com botões pra você classificar.\n\n' +
             '📞 Atendido  ·  💰 Orçamento  ·  🏆 Fechado  ·  ❌ Descartar  ·  ↩️ Reabrir\n\n' +
-            '<b>Comando</b>\n/leads — ver o funil e os últimos contatos',
+            '<b>Comando</b>\n/leads — ver a lista e abrir cada contato',
         });
       }
       return new Response('ok');
